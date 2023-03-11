@@ -1,0 +1,16 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/hello_vulkan
+hello_vulkan.so
+hello_vulkan.dylib
+hello_vulkan.dll
+hello_vulkan.a
+hello_vulkan.lib
+hello_vulkan-test-*
+*.exe
+*.pdb
+*.o
+*.obj
+*.lst

@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"jordan4ibanez"
+	],
+	"copyright": "Copyright © 2023, jordan4ibanez",
+	"description": "Watch me struggle as I attempt to open a window in vulkan.",
+	"license": "MIT",
+	"name": "hello_vulkan"
+}
