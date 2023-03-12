@@ -36,6 +36,7 @@ private int FPS = 0;
 // Vulkan fields
 mixin(bindGLFW_Vulkan);
 private VkInstance instance;
+VkDebugUtilsMessengerEXT debugMessenger;
 
 //! I wrote it how the C++ tutorial runs but we want this to ALWAYS check
 // debug {
@@ -123,6 +124,42 @@ private void initializeVulkan() {
             writeln(split(to!string(thisExtension.extensionName), "\0")[0]);
         }
     }
+}
+
+void setupDebugMessenger() {
+    VkDebugUtilsMessengerCreateInfoEXT createInfo;
+    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+    createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+    createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+    createInfo.pUserData = VK_NULL_HANDLE; // Optional
+
+    // This is the only way I could find to shovel this into the callback
+    createInfo.pfnUserCallback = cast(PFN_vkDebugUtilsMessengerCallbackEXT)&debugCallback;
+}
+
+VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
+
+    auto func = cast(PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+    if (func != VK_NULL_HANDLE) {
+        return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+    } else {
+        return VK_ERROR_EXTENSION_NOT_PRESENT;
+    }
+}
+
+VkBool32 debugCallback(
+    VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+    VkDebugUtilsMessageTypeFlagsEXT messageType,
+    const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+    void* pUserData
+) {
+
+    if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
+        // Message is important enough to show
+        writeln("Vulkan Validation Layer: ", pCallbackData.pMessage);
+    }
+
+    return VK_FALSE;
 }
 
 string[] getRequiredExtensions() {
