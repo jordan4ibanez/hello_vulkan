@@ -9,5 +9,12 @@
 	},
 	"description": "Watch me struggle as I attempt to open a window in vulkan.",
 	"license": "MIT",
-	"name": "hello_vulkan"
+	"name": "hello_vulkan",
+    "libs-posix": [
+		"z"
+	],
+    "versions": [
+		"GLFW_33",
+		"GL_41"
+	]
 }
