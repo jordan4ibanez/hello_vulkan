@@ -132,8 +132,7 @@ private void checkValidationLayerSupport() {
 
             string gottenLayerName = split(to!string(layer.layerName), "\0")[0];
 
-            // writeln(gottenLayerName);
-
+            // Yeah that looks like what we want, noice
             if (gottenLayerName == layerName) {
                 layerFound = true;
                 break;
