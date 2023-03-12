@@ -13,6 +13,7 @@ module window.window;
 import std.stdio;
 import std.conv;
 import std.string;
+import std.array;
 import doml.vector_2i;
 import doml.vector_2d;
 import doml.vector_3d;
@@ -94,6 +95,22 @@ void initializeVulkan() {
     if (vkCreateInstance(&createInfo, VK_NULL_HANDLE, &instance) != VK_SUCCESS) {
         throw new Exception("Vulkan: Failed to create instance!");
     }
+
+    // Check for extension support
+    uint extensionCount = 0;
+    vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, VK_NULL_HANDLE);
+
+    VkExtensionProperties[] extensions = new VkExtensionProperties[extensionCount];
+    
+    vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, cast(VkExtensionProperties*)&extensions[0]);
+
+    writeln("VULKAN AVAILABLE EXTENSIONS:");
+
+    foreach (VkExtensionProperties thisExtension; extensions) {
+        writeln(split(to!string(thisExtension.extensionName), "\0")[0]);
+    }
+    
+
 }
 
 
