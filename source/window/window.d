@@ -1,13 +1,3 @@
-/**
-
-An important note:
-
-This is an experimental blending of two libraries that I think? we're never meant to work together
-
-This is going to look crazy
-
-*/
-
 module window.window;
 
 import std.stdio;
@@ -112,8 +102,10 @@ private void initializeVulkan() {
 
 void destroy() {
     vkDestroyInstance(instance, VK_NULL_HANDLE);
+    writeln("Vulkan instance destroyed successfully!");
     glfwDestroyWindow(window);
     glfwTerminate();
+    writeln("GLFW 3.3 destroyed successfully!");
 }
 
 
