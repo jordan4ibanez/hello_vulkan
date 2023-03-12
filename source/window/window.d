@@ -3,7 +3,6 @@ module window.window;
 import std.stdio;
 import std.conv;
 import std.string;
-import bindbc.glfw;
 import doml.vector_2i;
 import doml.vector_2d;
 import doml.vector_3d;
@@ -12,6 +11,9 @@ import erupted;
 
 // This is a special import. We only want to extract the loader from this module.
 import loader = bindbc.loader.sharedlib;
+import bindbc.glfw;
+
+mixin(bindGLFW_Vulkan);
 
 // OpenGL fields
 private string glVersion;
@@ -63,9 +65,9 @@ void initializeVulkan() {
     createInfo.pApplicationInfo = &appInfo;
     
     uint glfwExtensionCount = 0;
-    const char* glfwExtensions;
+    const(char)** glfwExtensions;
 
-    // glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
 
 
