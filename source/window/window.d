@@ -124,6 +124,8 @@ private void initializeVulkan() {
             writeln(split(to!string(thisExtension.extensionName), "\0")[0]);
         }
     }
+
+    setupDebugMessenger();
 }
 
 void setupDebugMessenger() {
@@ -135,6 +137,10 @@ void setupDebugMessenger() {
 
     // This is the only way I could find to shovel this into the callback
     createInfo.pfnUserCallback = cast(PFN_vkDebugUtilsMessengerCallbackEXT)&debugCallback;
+
+    if (CreateDebugUtilsMessengerEXT(instance, &createInfo, VK_NULL_HANDLE, &debugMessenger) != VK_SUCCESS) {
+        throw new Exception("Vulkan: Failed to set up debug messenger!");
+    }
 }
 
 VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
