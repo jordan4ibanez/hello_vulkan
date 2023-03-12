@@ -1,6 +1,7 @@
 import std.stdio;
 
 import bindbc.glfw;
+import erupted.functions;
 
 void main()
 {
@@ -8,10 +9,24 @@ void main()
     glfwLoad();
 
     glfwInit();
-    
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     GLFWwindow* window = glfwCreateWindow(800,600, "Vulkan Window", null, null);
+
+
+    uint extensionCount = 0;
+    // vkEnumerateInstanceExtensionProperties(null, &extensionCount, null);
+    
+
+    // VkResult blah = vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE);
+    // writeln("Extensions supported: ", extensionCount);
+
+    while(!glfwWindowShouldClose(window)) {
+
+
+
+        glfwPollEvents();
+    }
 
     glfwDestroyWindow(window);
     glfwTerminate();
