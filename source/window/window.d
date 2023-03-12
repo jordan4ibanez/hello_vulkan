@@ -18,6 +18,7 @@ import doml.vector_2d;
 import doml.vector_3d;
 import delta_time;
 import erupted;
+import erupted.vulkan_lib_loader;
 
 // This is a special import. We only want to extract the loader from this module.
 import loader = bindbc.loader.sharedlib;
@@ -61,8 +62,21 @@ void initializeVulkan() {
 
     bool success = loadGLFW_Vulkan();
 
+    // // Failed to load the bindbc vulkan
     if (!success) {
-        throw new Exception("Vulkan: Failed to load library!");
+        throw new Exception("Vulkan: Failed to load BindBC library!");
+    }
+
+    
+
+    success = loadGlobalLevelFunctions();
+    /*
+    Error: function `erupted.functions.loadGlobalLevelFunctions(extern (Windows) extern (Windows) void function() nothrow @nogc function(VkInstance_handle* instance, const(char)* pName) nothrow @nogc getInstanceProcAddr)`
+    is not callable using argument types                      `(extern (Windows) extern (Windows) void function() nothrow @nogc function(VkInstance_handle*, const(char)*) nothrow @nogc*)`
+    */
+
+    if (!success) {
+        throw new Exception("Vulkan: Failed to load Eruption global level functions!");
     }
 
     // App information
@@ -89,11 +103,10 @@ void initializeVulkan() {
 
     createInfo.enabledLayerCount = 0;
     
-    vkCreateInstance(&createInfo, VK_NULL_HANDLE, &instance);
 
-    // if ( != VK_SUCCESS) {
-    //     throw new Exception("Vulkan: Failed to create instance!");
-    // }
+    if (vkCreateInstance(&createInfo, VK_NULL_HANDLE, &instance) != VK_SUCCESS) {
+        throw new Exception("Vulkan: Failed to create instance!");
+    }
 }
 
 
