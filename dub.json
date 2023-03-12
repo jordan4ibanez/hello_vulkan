@@ -16,7 +16,6 @@
 	"license": "MIT",
 	"name": "hello_vulkan",
 	"versions": [
-		"GLFW_33",
-		"GL_41"
+		"GLFW_33"
 	]
 }
