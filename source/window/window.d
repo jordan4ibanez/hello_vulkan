@@ -3,19 +3,15 @@ module window.window;
 import std.stdio;
 import std.conv;
 import std.string;
-import bindbc.opengl;
 import bindbc.glfw;
 import doml.vector_2i;
 import doml.vector_2d;
 import doml.vector_3d;
 import delta_time;
-import tools.gl_error;
+import erupted;
 
 // This is a special import. We only want to extract the loader from this module.
 import loader = bindbc.loader.sharedlib;
-
-// This is an import that allows us to print debug info.
-import tools.log;
 
 // OpenGL fields
 private string glVersion;
@@ -424,17 +420,7 @@ private bool initializeOpenGL() {
     return true;
 }
 
-string getInitialOpenGLVersion() {
-    string raw = to!string(loadedOpenGLVersion());
-    char[] charArray = raw.dup[2..raw.length];
-    return "OpenGL " ~ charArray[0] ~ "." ~ charArray[1];
-}
 
-string translateGLVersionName(GLSupport name) {
-    string raw = to!string(name);
-    char[] charArray = raw.dup[2..raw.length];
-    return "OpenGL " ~ charArray[0] ~ "." ~ charArray[1];
-}
 
 void clear() {
     glClear(GL_COLOR_BUFFER_BIT);
