@@ -85,34 +85,6 @@ private bool initializeGLFWComponents() {
     return true;
 }
 
-nothrow
-static extern(C) void myframeBufferSizeCallback(GLFWwindow* theWindow, int x, int y) {
-    windowSize.x = x;
-    windowSize.y = y;
-    glViewport(0,0,x,y);
-}
-// nothrow
-// static extern(C) void externalKeyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods){
-//     // This is the best hack ever, or the worst
-//     try {
-//     Keyboard.keyCallback(key,scancode,action,mods);
-//     } catch(Exception e){nothrowWriteln(e);}
-// }
-
-// nothrow
-// static extern(C) void externalcursorPositionCallback(GLFWwindow* window, double xpos, double ypos) {
-//     try {
-//         Mouse.mouseCallback(Vector2d(xpos, ypos));
-//     } catch(Exception e){nothrowWriteln(e);}
-// }
-
-// nothrow
-// static extern(C) void myRefreshCallback(GLFWwindow* theWindow) {
-//     try {
-//         return;
-//     } catch(Exception e) {}
-// }
-
 
 // Window talks directly to GLFW
 private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
@@ -197,63 +169,9 @@ private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
     return true;
 }
 
-private void updateVideoMode() {
-    // Get primary monitor specs
-    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-    // Dereference the pointer into a usable structure in class
-    videoMode = *mode;
-}
-
-private void setHalfSizeInternal() {
-
-    updateVideoMode();
-    
-    // Divide by 2 to get a "perfectly" half sized window
-    int windowSizeX = videoMode.width  / 2;
-    int windowSizeY = videoMode.height / 2;
-
-    // Divide by 4 to get a "perfectly" centered window
-    int windowPositionX = videoMode.width  / 4;
-    int windowPositionY = videoMode.height / 4;
-
-    glfwSetWindowMonitor(
-        window,
-        null,
-        windowPositionX,
-        windowPositionY,
-        windowSizeX,
-        windowSizeY,
-        videoMode.refreshRate // Windows cares about this for some reason
-    );
-
-    glfwSwapInterval(vsync);
-
-    // centerMouse();
-    // stopMouseJolt();
-
-    fullscreen = false;
-}
 
 
 
-void setMousePosition(double x, double y) {
-    glfwSetCursorPos(window, x, y);
-}
-
-Vector2d centerMouse() {
-    double x = windowSize.x / 2.0;
-    double y = windowSize.y / 2.0;
-    glfwSetCursorPos(
-        window,
-        x,
-        y
-    );
-    return Vector2d(x,y);
-}
-
-
-
-// Internally handles interfacing to C
 bool shouldClose() {
     return (glfwWindowShouldClose(window) != 0);
 }
