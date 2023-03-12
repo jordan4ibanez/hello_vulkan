@@ -44,6 +44,11 @@ private VkInstance instance;
     // private bool enableValidationLayers  = false;
 // }
 
+immutable string[] validationLayers = [
+    "VK_LAYER_KHRONOS_validation"
+];
+
+// Just the initializer for the module
 void initialize() {
     if (!initializeGLFW()) {
         throw new Exception("GLFW failed");
@@ -107,21 +112,48 @@ private void initializeVulkan() {
             writeln(split(to!string(thisExtension.extensionName), "\0")[0]);
         }
     }
+    loadDeviceLevelFunctions(instance);
+
+    checkValidationLayerSupport();
 }
 
-private bool checkValidationLayerSupport() {
+private void checkValidationLayerSupport() {
 
+    // Attempt to get validation layers
     uint layerCount = 0;
     vkEnumerateInstanceLayerProperties(&layerCount, VK_NULL_HANDLE);
     VkLayerProperties[] availableLayers = new VkLayerProperties[layerCount];
-    vkEnumerateInstanceLayerProperties(&layerCount, &availableLayers);
+    vkEnumerateInstanceLayerProperties(&layerCount, cast(VkLayerProperties*)&availableLayers[0]);
 
-    
+    // Now let's see if it contains the one's we requested in validationLayers
+    foreach (string layerName; validationLayers) {
+        bool layerFound = false;
+        
+        foreach (VkLayerProperties layer; availableLayers) {
 
+            string gottenLayerName = split(to!string(layer.layerName), "\0")[0];
+            writeln(gottenLayerName);
 
+            if (gottenLayerName == layerName) {
+                layerFound = true;
+                break;
+            }
+        }
 
-    
-    return false;
+        if (!layerFound) {
+
+            /**
+            Important note on how this differs from the reference:
+
+            In C code it was just blindly telling you that there was one validation missing.
+
+            In this D code we want to know WHICH validation layer is missing
+            */
+
+            throw new Exception("Vulkan: Validation Layer " ~ layerName ~ " was requested but not available!\n" ~
+            "Is the Vulkan SDK installed? You can get it here: https://vulkan.lunarg.com/");
+        }
+    }
 }
 
 void destroy() {
