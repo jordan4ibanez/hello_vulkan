@@ -88,6 +88,9 @@ private void initializeVulkan() {
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
     createInfo.enabledExtensionCount = glfwExtensionCount;
     createInfo.ppEnabledExtensionNames = glfwExtensions;
+
+    checkValidationLayerSupport();
+
     createInfo.enabledLayerCount = 0;
 
     // Make an instance of Vulkan in program
@@ -112,11 +115,15 @@ private void initializeVulkan() {
             writeln(split(to!string(thisExtension.extensionName), "\0")[0]);
         }
     }
-
-    checkValidationLayerSupport();
 }
 
+/// This is designed around safety, this will NOT let the program continue without validation
 private void checkValidationLayerSupport() {
+
+    // But we can turn it off if we'd like in a release build
+    if (!enableValidationLayers) {
+        return;
+    }
 
     // Attempt to get validation layers
     uint layerCount = 0;
