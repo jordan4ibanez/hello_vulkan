@@ -41,6 +41,15 @@ void initialize() {
     // Initialize Vulkan goes here
 }
 
+//* =================================================== VULKAN TOOLS ========================================
+
+void initializeVulkan() {
+
+
+}
+
+//! =================================================== END VULKAN TOOLS ==========================================
+
 //* ======== GLFW Tools ========
 
 // Returns success state 
