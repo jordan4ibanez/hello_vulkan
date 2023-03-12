@@ -3,6 +3,23 @@ import std.stdio;
 import bindbc.glfw;
 import erupted.functions;
 
+/** C++ reference code
+
+class HelloTriangleApplication {
+    void run() {
+        initVulkan();
+        mainLoop();
+        cleanup();
+    }
+
+    void initVulkan() {}
+    void mainLoop() {}
+    void cleanup() {}
+};
+
+calls run(); in main();
+*/
+
 void main()
 {
 	writeln("Vulkan goes here!");
