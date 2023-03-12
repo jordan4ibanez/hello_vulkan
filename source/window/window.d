@@ -60,23 +60,14 @@ void initialize() {
 
 void initializeVulkan() {
 
-    bool success = loadGLFW_Vulkan();
-
-    // // Failed to load the bindbc vulkan
-    if (!success) {
-        throw new Exception("Vulkan: Failed to load BindBC library!");
+    // Attempt to load the BindBC Vulkan library
+    if (!loadGLFW_Vulkan()) {
+        throw new Exception("Vulkan: Failed to load BindBC Vulkan library!");
     }
 
-    
-
-    success = loadGlobalLevelFunctions();
-    /*
-    Error: function `erupted.functions.loadGlobalLevelFunctions(extern (Windows) extern (Windows) void function() nothrow @nogc function(VkInstance_handle* instance, const(char)* pName) nothrow @nogc getInstanceProcAddr)`
-    is not callable using argument types                      `(extern (Windows) extern (Windows) void function() nothrow @nogc function(VkInstance_handle*, const(char)*) nothrow @nogc*)`
-    */
-
-    if (!success) {
-        throw new Exception("Vulkan: Failed to load Eruption global level functions!");
+    // Attempt to load up Erupted global level functions
+    if (!loadGlobalLevelFunctions()) {
+        throw new Exception("Vulkan: Failed to load Erupted global level functions!");
     }
 
     // App information
@@ -92,18 +83,14 @@ void initializeVulkan() {
     VkInstanceCreateInfo createInfo;
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo = &appInfo;
-    
     uint glfwExtensionCount = 0;
     const(char)** glfwExtensions;
-
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
     createInfo.enabledExtensionCount = glfwExtensionCount;
     createInfo.ppEnabledExtensionNames = glfwExtensions;
-
     createInfo.enabledLayerCount = 0;
     
-
+    // Now finally make an instance of Vulkan in program
     if (vkCreateInstance(&createInfo, VK_NULL_HANDLE, &instance) != VK_SUCCESS) {
         throw new Exception("Vulkan: Failed to create instance!");
     }
