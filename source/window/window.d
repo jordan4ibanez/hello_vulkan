@@ -83,30 +83,19 @@ private void initializeVulkan() {
     VkInstanceCreateInfo createInfo;
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo = &appInfo;
-    uint glfwExtensionCount = 0;
-    const(char)** glfwExtensions;
-    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-    getRequiredExtensions();
+    // Get all extensions
+    string[] extensions = getRequiredExtensions();
 
-
-
-    createInfo.enabledExtensionCount = glfwExtensionCount;
-    createInfo.ppEnabledExtensionNames = glfwExtensions;
+    createInfo.enabledExtensionCount = cast(int)extensions.length;
+    createInfo.ppEnabledExtensionNames = convertToCStringArray(extensions);
 
     checkValidationLayerSupport();
 
     // Now make those validation layers available, or don't
     if (enableValidationLayers) {
         createInfo.enabledLayerCount = cast(uint)validationLayers.length;
-
-        // We must convert this into a C style array array - Thanks for the help ADR!
-        const(char)*[] array = [];
-        foreach (string validationLayerName; validationLayers) {
-            array ~= validationLayerName.toStringz;
-        }
-        const(char*)* temp = array.ptr;
-        createInfo.ppEnabledLayerNames = temp;
+        createInfo.ppEnabledLayerNames = convertToCStringArray(validationLayers);
     } else {
         createInfo.enabledLayerCount = 0;
     }
@@ -122,14 +111,15 @@ private void initializeVulkan() {
     // Check for extension support
     uint extensionCount = 0;
     vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, VK_NULL_HANDLE);
-    VkExtensionProperties[] extensions = new VkExtensionProperties[extensionCount];
-    vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, cast(VkExtensionProperties*)&extensions[0]);
+
+    VkExtensionProperties[] vulkanExtensions = new VkExtensionProperties[extensionCount];
+    vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, cast(VkExtensionProperties*)&vulkanExtensions[0]);
 
     // Output available extensions into the terminal
     if (false) {
         writeln("VULKAN AVAILABLE EXTENSIONS:" ~
                 "==================================");
-        foreach (VkExtensionProperties thisExtension; extensions) {
+        foreach (VkExtensionProperties thisExtension; vulkanExtensions) {
             writeln(split(to!string(thisExtension.extensionName), "\0")[0]);
         }
     }
@@ -158,6 +148,15 @@ string[] getRequiredExtensions() {
     }
 
     return extensions;
+}
+
+// We must convert this into a C style array array - Thanks for the help ADR!
+const(char*)* convertToCStringArray(const string[] inputArray) {
+    const(char)*[] array = [];
+    foreach (string name; inputArray) {
+        array ~= name.toStringz;
+    }
+    return array.ptr;
 }
 
 /// This is designed around safety, this will NOT let the program continue without validation
