@@ -33,6 +33,9 @@ private double deltaAccumulator = 0.0;
 private int fpsCounter = 0;
 private int FPS = 0;
 
+// Vulkan fields
+VkInstance* vkInstance;
+
 
 void initialize() {
     if (!initializeGLFW()) {
@@ -44,8 +47,7 @@ void initialize() {
 //* =================================================== VULKAN TOOLS ========================================
 
 void initializeVulkan() {
-
-
+    vkCreateInstance();
 }
 
 //! =================================================== END VULKAN TOOLS ==========================================
@@ -107,24 +109,24 @@ private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
     }
 
     // Minimum version is 4.1 (July 26, 2010)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    // glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Allow driver optimizations
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    bool halfScreenAuto = false;
+    // bool halfScreenAuto = false;
 
-    // Auto start as half screened
-    if (windowSizeX == -1 || windowSizeY == -1) {
-        halfScreenAuto = true;
-        // Literally one pixel so glfw does not crash.
-        // Is automatically changed before the player even sees the window.
-        // Desktops like KDE will override the height (y) regardless
-        windowSizeX = 1;
-        windowSizeY = 1;
-    }
+    // // Auto start as half screened
+    // if (windowSizeX == -1 || windowSizeY == -1) {
+    //     halfScreenAuto = true;
+    //     // Literally one pixel so glfw does not crash.
+    //     // Is automatically changed before the player even sees the window.
+    //     // Desktops like KDE will override the height (y) regardless
+    //     windowSizeX = 1;
+    //     windowSizeY = 1;
+    // }
 
     // Create a window on the primary monitor
     window = glfwCreateWindow(windowSizeX, windowSizeY, title.toStringz, null, null);
@@ -143,19 +145,19 @@ private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
     // Using 3.3 regardless so enable raw input
     // This is so windows, kde, & gnome scale identically with cursor input, only the mouse dpi changes this
     // This allows the sensitivity to be controlled in game and behave the same regardless
-    glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+    // glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 
 
     // Monitor information & full screening & halfscreening
 
     // Automatically half the monitor size
-    if (halfScreenAuto) {
-        writeln("automatically half sizing the window");
-        setHalfSizeInternal();
-    }
+    // if (halfScreenAuto) {
+    //     writeln("automatically half sizing the window");
+    //     setHalfSizeInternal();
+    // }
 
 
-    glfwSetFramebufferSizeCallback(window, &myframeBufferSizeCallback);
+    // glfwSetFramebufferSizeCallback(window, &myframeBufferSizeCallback);
 
     // glfwSetKeyCallback(window, &externalKeyCallBack);
 
@@ -164,13 +166,13 @@ private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
 
     // glfwSetWindowRefreshCallback(window, &myRefreshCallback);
     
-    glfwMakeContextCurrent(window);
+    // glfwMakeContextCurrent(window);
 
     // The swap interval is ignored before context is current
     // We must set it again, even though it is automated in fullscreen/halfsize
-    glfwSwapInterval(vsync);
+    // glfwSwapInterval(vsync);
 
-    glfwGetWindowSize(window,&windowSize.x, &windowSize.y);    
+    // glfwGetWindowSize(window,&windowSize.x, &windowSize.y);    
 
     // No error :)
     return true;
