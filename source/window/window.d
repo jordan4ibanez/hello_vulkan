@@ -47,7 +47,7 @@ private int fpsCounter = 0;
 private int FPS = 0;
 
 // Vulkan fields
-VkInstance instance;
+private VkInstance instance;
 
 
 void initialize() {
@@ -119,7 +119,9 @@ void destroy() {
 
     writeln("still null? ", &instance is null);
 
-    vkDestroyInstance(instance, VK_NULL_HANDLE);
+    //! This crashes for no reason
+    // vkDestroyInstance(instance, VK_NULL_HANDLE);
+    
     glfwDestroyWindow(window);
     glfwTerminate();
 }
@@ -207,7 +209,7 @@ private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
     }
 
     // In the future, get array of monitor pointers with: GLFWmonitor** monitors = glfwGetMonitors(&count);
-    monitor = glfwGetPrimaryMonitor();
+    // monitor = glfwGetPrimaryMonitor();
   
 
     // No error :)
