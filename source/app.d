@@ -23,5 +23,10 @@ calls run(); in main();
 
 void main() {
     window.initialize();
+
+    while (!window.shouldClose()) {
+        window.pollEvents();
+    }
     
+    window.destroy();
 }
