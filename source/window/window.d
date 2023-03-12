@@ -1,3 +1,13 @@
+/**
+
+An important note:
+
+This is an experimental blending of two libraries that I think? we're never meant to work together
+
+This is going to look crazy
+
+*/
+
 module window.window;
 
 import std.stdio;
@@ -35,19 +45,25 @@ private int fpsCounter = 0;
 private int FPS = 0;
 
 // Vulkan fields
-VkInstance* vkInstance;
+VkInstance instance;
 
 
 void initialize() {
     if (!initializeGLFW()) {
         throw new Exception("GLFW failed");
     }
-    // Initialize Vulkan goes here
+    initializeVulkan();
 }
 
 //* =================================================== VULKAN TOOLS ========================================
 
 void initializeVulkan() {
+
+    bool success = loadGLFW_Vulkan();
+
+    if (!success) {
+        throw new Exception("Vulkan: Failed to load library!");
+    }
 
     // App information
     VkApplicationInfo appInfo;
@@ -68,10 +84,16 @@ void initializeVulkan() {
 
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
+    createInfo.enabledExtensionCount = glfwExtensionCount;
+    createInfo.ppEnabledExtensionNames = glfwExtensions;
 
+    createInfo.enabledLayerCount = 0;
+    
+    vkCreateInstance(&createInfo, VK_NULL_HANDLE, &instance);
 
-
-    // vkCreateInstance();
+    // if ( != VK_SUCCESS) {
+    //     throw new Exception("Vulkan: Failed to create instance!");
+    // }
 }
 
 
