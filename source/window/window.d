@@ -129,6 +129,11 @@ private void initializeVulkan() {
 }
 
 void setupDebugMessenger() {
+    if (!enableValidationLayers) {
+        writeln("Vulkan: Debugger is disabled!");
+    }
+    writeln("Vulkan: Debugger is enabled!");
+    
     VkDebugUtilsMessengerCreateInfoEXT createInfo;
     createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
     createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
@@ -150,6 +155,13 @@ VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMes
         return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
     } else {
         return VK_ERROR_EXTENSION_NOT_PRESENT;
+    }
+}
+
+void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
+    auto func = cast(PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+    if (func != VK_NULL_HANDLE) {
+        func(instance, debugMessenger, pAllocator);
     }
 }
 
@@ -253,6 +265,10 @@ private void checkValidationLayerSupport() {
 }
 
 void destroy() {
+    if (enableValidationLayers) {
+        DestroyDebugUtilsMessengerEXT(instance, debugMessenger, VK_NULL_HANDLE);
+        writeln("Vulkan: Destroyed debugger!");
+    }
     vkDestroyInstance(instance, VK_NULL_HANDLE);
     writeln("Vulkan: Instance destroyed successfully!");
     glfwDestroyWindow(window);
