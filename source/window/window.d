@@ -56,7 +56,7 @@ void initialize() {
 
 //* =================================================== VULKAN TOOLS ========================================
 
-void initializeVulkan() {
+private void initializeVulkan() {
 
     // Attempt to load the BindBC Vulkan library
     if (!loadGLFW_Vulkan()) {
@@ -99,13 +99,10 @@ void initializeVulkan() {
     // Check for extension support
     uint extensionCount = 0;
     vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, VK_NULL_HANDLE);
-
     VkExtensionProperties[] extensions = new VkExtensionProperties[extensionCount];
-    
     vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, cast(VkExtensionProperties*)&extensions[0]);
 
     writeln("VULKAN AVAILABLE EXTENSIONS:");
-
     foreach (VkExtensionProperties thisExtension; extensions) {
         writeln(split(to!string(thisExtension.extensionName), "\0")[0]);
     }
