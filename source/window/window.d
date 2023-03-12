@@ -37,6 +37,13 @@ private int FPS = 0;
 mixin(bindGLFW_Vulkan);
 private VkInstance instance;
 
+//! I wrote it how the C++ tutorial runs but we want this to ALWAYS check
+// debug {
+    private bool enableValidationLayers  = true;
+// } else {
+    // private bool enableValidationLayers  = false;
+// }
+
 void initialize() {
     if (!initializeGLFW()) {
         throw new Exception("GLFW failed");
@@ -92,12 +99,14 @@ private void initializeVulkan() {
     VkExtensionProperties[] extensions = new VkExtensionProperties[extensionCount];
     vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, cast(VkExtensionProperties*)&extensions[0]);
 
-    writeln("VULKAN AVAILABLE EXTENSIONS:");
-    foreach (VkExtensionProperties thisExtension; extensions) {
-        writeln(split(to!string(thisExtension.extensionName), "\0")[0]);
+    // Output available extensions into the terminal
+    if (false) {
+        writeln("VULKAN AVAILABLE EXTENSIONS:" ~
+                "==================================");
+        foreach (VkExtensionProperties thisExtension; extensions) {
+            writeln(split(to!string(thisExtension.extensionName), "\0")[0]);
+        }
     }
-    
-
 }
 
 void destroy() {
