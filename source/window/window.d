@@ -13,9 +13,8 @@ import erupted;
 import loader = bindbc.loader.sharedlib;
 import bindbc.glfw;
 
-mixin(bindGLFW_Vulkan);
-
 // OpenGL fields
+mixin(bindGLFW_Vulkan);
 private string glVersion;
 private Vector3d clearColor;
 
