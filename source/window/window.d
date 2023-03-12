@@ -329,119 +329,119 @@ bool isFullScreen() {
 //* ======= OpenGL Tools =======
 
 /// Returns success
-private bool initializeOpenGL() {
-    /**
-    Compare the return value of loadGL with the global `glSupport` constant to determine if the version of GLFW
-    configured at compile time is the version that was loaded.
-    */
-    GLSupport ret = loadOpenGL();
+// private bool initializeOpenGL() {
+//     /**
+//     Compare the return value of loadGL with the global `glSupport` constant to determine if the version of GLFW
+//     configured at compile time is the version that was loaded.
+//     */
+//     GLSupport ret = loadOpenGL();
 
-    writeln(ret);
+//     writeln(ret);
 
-    glVersion = translateGLVersionName(ret);
+//     glVersion = translateGLVersionName(ret);
 
-    writeln("The current supported context is: ", glVersion);
+//     writeln("The current supported context is: ", glVersion);
 
-    // Minimum version is GL 4.1 (July 26, 2010)
-    if(ret < GLSupport.gl41) {
-        writeln("ERROR IN OpenGL");
-        // Log the error info
-        foreach(info; loader.errors) {
-            /*
-            A hypothetical logging function. Note that `info.error` and `info.message` are `const(char)*`, not
-            `string`.
-            */
-            logCError(info.error, info.message);
-        }
+//     // Minimum version is GL 4.1 (July 26, 2010)
+//     if(ret < GLSupport.gl41) {
+//         writeln("ERROR IN OpenGL");
+//         // Log the error info
+//         foreach(info; loader.errors) {
+//             /*
+//             A hypothetical logging function. Note that `info.error` and `info.message` are `const(char)*`, not
+//             `string`.
+//             */
+//             logCError(info.error, info.message);
+//         }
 
-        // Optionally construct a user-friendly error message for the user
-        string msg;
-        if(ret == GLSupport.noLibrary) {
-            msg = "This application requires the GLFW library.";
-        }
-        else if(ret == GLSupport.badLibrary) {
-            msg = "The version of the GLFW library on your system is too low. Please upgrade.";
-        }
-        // GLSupport.noContext
-        else {
-            msg = "Your GPU cannot support the minimum OpenGL Version: 4.1! Released: July 26, 2010.\n" ~
-                "Are your graphics drivers updated?";
-        }
-        // A hypothetical message box function
-        writeln(msg);
-        writeln("ABORTING");
-        return false;
-    }
+//         // Optionally construct a user-friendly error message for the user
+//         string msg;
+//         if(ret == GLSupport.noLibrary) {
+//             msg = "This application requires the GLFW library.";
+//         }
+//         else if(ret == GLSupport.badLibrary) {
+//             msg = "The version of the GLFW library on your system is too low. Please upgrade.";
+//         }
+//         // GLSupport.noContext
+//         else {
+//             msg = "Your GPU cannot support the minimum OpenGL Version: 4.1! Released: July 26, 2010.\n" ~
+//                 "Are your graphics drivers updated?";
+//         }
+//         // A hypothetical message box function
+//         writeln(msg);
+//         writeln("ABORTING");
+//         return false;
+//     }
 
-    if (!isOpenGLLoaded()) {
-        writeln("GL FAILED TO LOAD!!");
-        return false;
-    }
+//     if (!isOpenGLLoaded()) {
+//         writeln("GL FAILED TO LOAD!!");
+//         return false;
+//     }
 
-    // Wipe the error buffer completely
-    getAndClearGLErrors();
+//     // Wipe the error buffer completely
+//     getAndClearGLErrors();
     
-    // Vector2i windowSize = Window.getSize();
+//     // Vector2i windowSize = Window.getSize();
 
-    glViewport(0, 0, windowSize.x, windowSize.y);
+//     glViewport(0, 0, windowSize.x, windowSize.y);
 
-    bool cull = false;
+//     bool cull = false;
     
-    if (cull) {
-        // Enable backface culling
-        glEnable(GL_CULL_FACE);
-    } 
-    else {
-        // Disable backface culling
-        glDisable(GL_CULL_FACE);
-    }
+//     if (cull) {
+//         // Enable backface culling
+//         glEnable(GL_CULL_FACE);
+//     } 
+//     else {
+//         // Disable backface culling
+//         glDisable(GL_CULL_FACE);
+//     }
 
-    // Alpha color blending
-    glEnable(GL_BLEND);
-    glBlendEquation(GL_FUNC_ADD);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
+//     // Alpha color blending
+//     glEnable(GL_BLEND);
+//     glBlendEquation(GL_FUNC_ADD);
+//     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 
-    // Wireframe mode for debugging polygons
-    // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+//     // Wireframe mode for debugging polygons
+//     // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
-    // Enable depth testing
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+//     // Enable depth testing
+//     glEnable(GL_DEPTH_TEST);
+//     glDepthFunc(GL_LESS);
 
 
-    GLenum glErrorInfo = getAndClearGLErrors();
-    if (glErrorInfo != GL_NO_ERROR) {
-        writeln("GL ERROR: ", glErrorInfo);
-        writeln("ERROR IN GL INIT");
-        return false;
-    }
+//     GLenum glErrorInfo = getAndClearGLErrors();
+//     if (glErrorInfo != GL_NO_ERROR) {
+//         writeln("GL ERROR: ", glErrorInfo);
+//         writeln("ERROR IN GL INIT");
+//         return false;
+//     }
 
-    return true;
-}
+//     return true;
+// }
 
 
 
 void clear() {
-    glClear(GL_COLOR_BUFFER_BIT);
+    // glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void clear(double intensity) {
-    clearColor = Vector3d(intensity);
-    glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
-    glClear(GL_COLOR_BUFFER_BIT);
+    // clearColor = Vector3d(intensity);
+    // glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
+    // glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void clear(double r, double g, double b) {
-    clearColor = Vector3d(r,g,b);
-    glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
-    glClear(GL_COLOR_BUFFER_BIT);
+    // clearColor = Vector3d(r,g,b);
+    // glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
+    // glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void clear(Vector3d rgb) {
-    clearColor = rgb;
-    glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
-    glClear(GL_COLOR_BUFFER_BIT);
+    // clearColor = rgb;
+    // glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
+    // glClear(GL_COLOR_BUFFER_BIT);
 }
 
 double getWidth() {
