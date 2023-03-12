@@ -109,6 +109,21 @@ private void initializeVulkan() {
     }
 }
 
+private bool checkValidationLayerSupport() {
+
+    uint layerCount = 0;
+    vkEnumerateInstanceLayerProperties(&layerCount, VK_NULL_HANDLE);
+    VkLayerProperties[] availableLayers = new VkLayerProperties[layerCount];
+    vkEnumerateInstanceLayerProperties(&layerCount, &availableLayers);
+
+    
+
+
+
+    
+    return false;
+}
+
 void destroy() {
     vkDestroyInstance(instance, VK_NULL_HANDLE);
     writeln("Vulkan instance destroyed successfully!");
