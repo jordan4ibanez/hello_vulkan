@@ -86,6 +86,11 @@ private void initializeVulkan() {
     uint glfwExtensionCount = 0;
     const(char)** glfwExtensions;
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+    getRequiredExtensions();
+
+
+
     createInfo.enabledExtensionCount = glfwExtensionCount;
     createInfo.ppEnabledExtensionNames = glfwExtensions;
 
@@ -128,6 +133,31 @@ private void initializeVulkan() {
             writeln(split(to!string(thisExtension.extensionName), "\0")[0]);
         }
     }
+}
+
+string[] getRequiredExtensions() {
+
+    // We're basically crawling through C pointers here to get usable strings
+
+    uint glfwExtensionCount = 0;
+    const(char)** glfwExtensions;
+    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+    string[] extensions;
+
+    // Decode and append them
+    foreach (i; 0..glfwExtensionCount ) {
+        const(char)* theArray = glfwExtensions[i];
+        extensions ~= to!string(theArray);
+    }
+
+    // D auto converts this pointer mess into a string
+    if (enableValidationLayers) {
+        extensions ~= VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
+        writeln(extensions);
+    }
+
+    return extensions;
 }
 
 /// This is designed around safety, this will NOT let the program continue without validation
