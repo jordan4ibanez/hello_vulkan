@@ -149,8 +149,10 @@ private void checkValidationLayerSupport() {
             In this D code we want to know WHICH validation layer is missing!
             */
 
-            throw new Exception("Vulkan: Validation Layer " ~ layerName ~ " was requested but not available!\n" ~
-            "Is the Vulkan SDK installed? You can get it here: https://vulkan.lunarg.com/");
+            throw new Exception(
+                "Vulkan: Validation Layer " ~ layerName ~ " was requested but not available!\n" ~
+                "Is the Vulkan SDK installed? You can get it here: https://vulkan.lunarg.com/"
+            );
         }
     }
 }
