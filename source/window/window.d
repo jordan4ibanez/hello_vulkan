@@ -251,20 +251,11 @@ Vector2d centerMouse() {
     return Vector2d(x,y);
 }
 
-void setVsync(int value) {
-    // There is an EXTREME bug with posix (Linux, BSD) that can lock the operating system up.
-    // For now, it will ignore trying to turn off vsync during runtime.
-    if (isPosix()) {
-        return;
-    }
-    vsync = value;
-    glfwSwapInterval(vsync);
-}
+
 
 // Internally handles interfacing to C
 bool shouldClose() {
-    bool newValue = (glfwWindowShouldClose(window) != 0);
-    return newValue;
+    return (glfwWindowShouldClose(window) != 0);
 }
 
 void swapBuffers() {
@@ -324,125 +315,6 @@ bool isFullScreen() {
 }
 
 //! ====== End GLFW Tools ======
-
-
-//* ======= OpenGL Tools =======
-
-/// Returns success
-// private bool initializeOpenGL() {
-//     /**
-//     Compare the return value of loadGL with the global `glSupport` constant to determine if the version of GLFW
-//     configured at compile time is the version that was loaded.
-//     */
-//     GLSupport ret = loadOpenGL();
-
-//     writeln(ret);
-
-//     glVersion = translateGLVersionName(ret);
-
-//     writeln("The current supported context is: ", glVersion);
-
-//     // Minimum version is GL 4.1 (July 26, 2010)
-//     if(ret < GLSupport.gl41) {
-//         writeln("ERROR IN OpenGL");
-//         // Log the error info
-//         foreach(info; loader.errors) {
-//             /*
-//             A hypothetical logging function. Note that `info.error` and `info.message` are `const(char)*`, not
-//             `string`.
-//             */
-//             logCError(info.error, info.message);
-//         }
-
-//         // Optionally construct a user-friendly error message for the user
-//         string msg;
-//         if(ret == GLSupport.noLibrary) {
-//             msg = "This application requires the GLFW library.";
-//         }
-//         else if(ret == GLSupport.badLibrary) {
-//             msg = "The version of the GLFW library on your system is too low. Please upgrade.";
-//         }
-//         // GLSupport.noContext
-//         else {
-//             msg = "Your GPU cannot support the minimum OpenGL Version: 4.1! Released: July 26, 2010.\n" ~
-//                 "Are your graphics drivers updated?";
-//         }
-//         // A hypothetical message box function
-//         writeln(msg);
-//         writeln("ABORTING");
-//         return false;
-//     }
-
-//     if (!isOpenGLLoaded()) {
-//         writeln("GL FAILED TO LOAD!!");
-//         return false;
-//     }
-
-//     // Wipe the error buffer completely
-//     getAndClearGLErrors();
-    
-//     // Vector2i windowSize = Window.getSize();
-
-//     glViewport(0, 0, windowSize.x, windowSize.y);
-
-//     bool cull = false;
-    
-//     if (cull) {
-//         // Enable backface culling
-//         glEnable(GL_CULL_FACE);
-//     } 
-//     else {
-//         // Disable backface culling
-//         glDisable(GL_CULL_FACE);
-//     }
-
-//     // Alpha color blending
-//     glEnable(GL_BLEND);
-//     glBlendEquation(GL_FUNC_ADD);
-//     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
-
-//     // Wireframe mode for debugging polygons
-//     // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-
-//     // Enable depth testing
-//     glEnable(GL_DEPTH_TEST);
-//     glDepthFunc(GL_LESS);
-
-
-//     GLenum glErrorInfo = getAndClearGLErrors();
-//     if (glErrorInfo != GL_NO_ERROR) {
-//         writeln("GL ERROR: ", glErrorInfo);
-//         writeln("ERROR IN GL INIT");
-//         return false;
-//     }
-
-//     return true;
-// }
-
-
-
-void clear() {
-    // glClear(GL_COLOR_BUFFER_BIT);
-}
-
-void clear(double intensity) {
-    // clearColor = Vector3d(intensity);
-    // glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
-    // glClear(GL_COLOR_BUFFER_BIT);
-}
-
-void clear(double r, double g, double b) {
-    // clearColor = Vector3d(r,g,b);
-    // glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
-    // glClear(GL_COLOR_BUFFER_BIT);
-}
-
-void clear(Vector3d rgb) {
-    // clearColor = rgb;
-    // glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
-    // glClear(GL_COLOR_BUFFER_BIT);
-}
 
 double getWidth() {
     return windowSize.x;
