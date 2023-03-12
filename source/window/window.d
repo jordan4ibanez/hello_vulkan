@@ -112,7 +112,6 @@ private void initializeVulkan() {
             writeln(split(to!string(thisExtension.extensionName), "\0")[0]);
         }
     }
-    loadDeviceLevelFunctions(instance);
 
     checkValidationLayerSupport();
 }
@@ -132,7 +131,8 @@ private void checkValidationLayerSupport() {
         foreach (VkLayerProperties layer; availableLayers) {
 
             string gottenLayerName = split(to!string(layer.layerName), "\0")[0];
-            writeln(gottenLayerName);
+
+            // writeln(gottenLayerName);
 
             if (gottenLayerName == layerName) {
                 layerFound = true;
@@ -147,7 +147,7 @@ private void checkValidationLayerSupport() {
 
             In C code it was just blindly telling you that there was one validation missing.
 
-            In this D code we want to know WHICH validation layer is missing
+            In this D code we want to know WHICH validation layer is missing!
             */
 
             throw new Exception("Vulkan: Validation Layer " ~ layerName ~ " was requested but not available!\n" ~
