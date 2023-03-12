@@ -25,9 +25,6 @@ import erupted.vulkan_lib_loader;
 import loader = bindbc.loader.sharedlib;
 import bindbc.glfw;
 
-// OpenGL fields
-mixin(bindGLFW_Vulkan);
-private string glVersion;
 private Vector3d clearColor;
 
 // GLFW fields
@@ -47,8 +44,8 @@ private int fpsCounter = 0;
 private int FPS = 0;
 
 // Vulkan fields
+mixin(bindGLFW_Vulkan);
 private VkInstance instance;
-
 
 void initialize() {
     if (!initializeGLFW()) {
@@ -90,38 +87,34 @@ void initializeVulkan() {
     createInfo.enabledExtensionCount = glfwExtensionCount;
     createInfo.ppEnabledExtensionNames = glfwExtensions;
     createInfo.enabledLayerCount = 0;
-    
-    // Now finally make an instance of Vulkan in program
+
+    // Make an instance of Vulkan in program
     if (vkCreateInstance(&createInfo, VK_NULL_HANDLE, &instance) != VK_SUCCESS) {
         throw new Exception("Vulkan: Failed to create instance!");
     }
 
+    // We can now load up instance level functions
+    loadInstanceLevelFunctions(instance);
+
     // Check for extension support
-    // uint extensionCount = 0;
-    // vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, VK_NULL_HANDLE);
+    uint extensionCount = 0;
+    vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, VK_NULL_HANDLE);
 
-    // VkExtensionProperties[] extensions = new VkExtensionProperties[extensionCount];
+    VkExtensionProperties[] extensions = new VkExtensionProperties[extensionCount];
     
-    // vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, cast(VkExtensionProperties*)&extensions[0]);
+    vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, cast(VkExtensionProperties*)&extensions[0]);
 
-    // writeln("VULKAN AVAILABLE EXTENSIONS:");
+    writeln("VULKAN AVAILABLE EXTENSIONS:");
 
-    // foreach (VkExtensionProperties thisExtension; extensions) {
-    //     writeln(split(to!string(thisExtension.extensionName), "\0")[0]);
-    // }
-
-    writeln("vulkan instance is null? ", &instance is null);
+    foreach (VkExtensionProperties thisExtension; extensions) {
+        writeln(split(to!string(thisExtension.extensionName), "\0")[0]);
+    }
     
 
 }
 
 void destroy() {
-
-    writeln("still null? ", &instance is null);
-
-    //! This crashes for no reason
-    // vkDestroyInstance(instance, VK_NULL_HANDLE);
-    
+    vkDestroyInstance(instance, VK_NULL_HANDLE);
     glfwDestroyWindow(window);
     glfwTerminate();
 }
