@@ -44,7 +44,7 @@ private VkInstance instance;
     // private bool enableValidationLayers  = false;
 // }
 
-immutable string[] validationLayers = [
+const string[] validationLayers = [
     "VK_LAYER_KHRONOS_validation"
 ];
 
@@ -91,7 +91,20 @@ private void initializeVulkan() {
 
     checkValidationLayerSupport();
 
-    createInfo.enabledLayerCount = 0;
+    // Now make those validation layers available, or don't
+    if (enableValidationLayers) {
+        createInfo.enabledLayerCount = cast(uint)validationLayers.length;
+
+        // We must convert this into a C style array array - Thanks for the help ADR!
+        const(char)*[] array = [];
+        foreach (string validationLayerName; validationLayers) {
+            array ~= validationLayerName.toStringz;
+        }
+        const(char*)* temp = array.ptr;
+        createInfo.ppEnabledLayerNames = temp;
+    } else {
+        createInfo.enabledLayerCount = 0;
+    }
 
     // Make an instance of Vulkan in program
     if (vkCreateInstance(&createInfo, VK_NULL_HANDLE, &instance) != VK_SUCCESS) {
