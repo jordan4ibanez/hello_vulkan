@@ -122,8 +122,10 @@ private void checkValidationLayerSupport() {
 
     // But we can turn it off if we'd like in a release build
     if (!enableValidationLayers) {
+        writeln("Vulkan: Validation layers disabled!");
         return;
     }
+    writeln("Vulkan: Validation layers enabled!");
 
     // Attempt to get validation layers
     uint layerCount = 0;
@@ -162,11 +164,12 @@ private void checkValidationLayerSupport() {
             );
         }
     }
+    writeln("Vulkan: Requested Vulkan validation layers are all available!");
 }
 
 void destroy() {
     vkDestroyInstance(instance, VK_NULL_HANDLE);
-    writeln("Vulkan instance destroyed successfully!");
+    writeln("Vulkan: Instance destroyed successfully!");
     glfwDestroyWindow(window);
     glfwTerminate();
     writeln("GLFW 3.3 destroyed successfully!");
