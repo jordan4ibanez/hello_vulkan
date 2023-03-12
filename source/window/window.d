@@ -47,8 +47,43 @@ void initialize() {
 //* =================================================== VULKAN TOOLS ========================================
 
 void initializeVulkan() {
-    vkCreateInstance();
+
+    // App information
+    VkApplicationInfo appInfo;
+    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    appInfo.pApplicationName = "Hello dere";
+    appInfo.applicationVersion = VK_MAKE_API_VERSION(0, 1, 0, 0);
+    appInfo.pEngineName = "No Engine";
+    appInfo.engineVersion = VK_MAKE_API_VERSION(0, 1, 0, 0);
+    appInfo.apiVersion = VK_API_VERSION_1_0;
+
+    // Instance creation info
+    VkInstanceCreateInfo createInfo;
+    createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    createInfo.pApplicationInfo = &appInfo;
+    
+    uint glfwExtensionCount = 0;
+    const char* glfwExtensions;
+
+    // glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+
+
+
+    // vkCreateInstance();
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 //! =================================================== END VULKAN TOOLS ==========================================
 
@@ -66,13 +101,15 @@ private bool initializeGLFWComponents() {
         returnedError = loadGLFW();
     }
 
+    // loadGLFW_Vulkan();
+
     if(returnedError != glfwSupport) {
         writeln("ERROR IN GLFW!");
         writeln("---------- DIRECT DEBUG ERROR ---------------");
         // Log the direct error info
-        foreach(info; loader.errors) {
-            logCError(info.error, info.message);
-        }
+        // foreach(info; loader.errors) {
+        //     logCError(info.error, info.message);
+        // }
         writeln("---------------------------------------------");
         writeln("------------ FUZZY SUGGESTION ---------------");
         // Log fuzzy error info with suggestion
@@ -128,8 +165,11 @@ private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
     //     windowSizeY = 1;
     // }
 
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
     // Create a window on the primary monitor
-    window = glfwCreateWindow(windowSizeX, windowSizeY, title.toStringz, null, null);
+    window = glfwCreateWindow(800, 600, "Remember to replace me", null, null);
 
     // Something even scarier fails to load
     if (!window || window == null) {
