@@ -38,9 +38,7 @@ void initialize() {
     if (!initializeGLFW()) {
         throw new Exception("GLFW failed");
     }
-    if (!initializeOpenGL()) {
-        throw new Exception("OpenGL failed");
-    }
+    // Initialize Vulkan goes here
 }
 
 //* ======== GLFW Tools ========
