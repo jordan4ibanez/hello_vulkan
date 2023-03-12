@@ -94,11 +94,17 @@ private void initializeVulkan() {
     checkValidationLayerSupport();
 
     // Now make those validation layers available, or don't
+    // Add in debug info as well
+    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
     if (enableValidationLayers) {
         createInfo.enabledLayerCount = cast(uint)validationLayers.length;
         createInfo.ppEnabledLayerNames = convertToCStringArray(validationLayers);
+
+        populateDebugMessengerCreateInfo(debugCreateInfo);
+        createInfo.pNext = cast(VkDebugUtilsMessengerCreateInfoEXT*) &debugCreateInfo;
     } else {
         createInfo.enabledLayerCount = 0;
+        createInfo.pNext = VK_NULL_HANDLE;
     }
 
     // Make an instance of Vulkan in program
@@ -128,6 +134,13 @@ private void initializeVulkan() {
     setupDebugMessenger();
 }
 
+void populateDebugMessengerCreateInfo(ref VkDebugUtilsMessengerCreateInfoEXT createInfo) {
+    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+    createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+    createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+    createInfo.pfnUserCallback = cast(PFN_vkDebugUtilsMessengerCallbackEXT)&debugCallback;
+}
+
 void setupDebugMessenger() {
     if (!enableValidationLayers) {
         writeln("Vulkan: Debugger is disabled!");
@@ -135,6 +148,7 @@ void setupDebugMessenger() {
     writeln("Vulkan: Debugger is enabled!");
     
     VkDebugUtilsMessengerCreateInfoEXT createInfo;
+    populateDebugMessengerCreateInfo(createInfo);
     createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
     createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
     createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
@@ -174,7 +188,7 @@ VkBool32 debugCallback(
 
     if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
         // Message is important enough to show
-        writeln("Vulkan Validation Layer: ", pCallbackData.pMessage);
+        writeln("Vulkan Validation Layer: ", to!string(pCallbackData.pMessage));
     }
 
     return VK_FALSE;
