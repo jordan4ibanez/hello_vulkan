@@ -4,14 +4,14 @@
 	],
 	"configurations": [
 		{
-			"name": "windows",
+			"name": "Windows",
 			"platforms": [
 				"windows"
 			],
 			"targetType": "executable"
 		},
 		{
-            "name": "linux",
+            "name": "Linux",
 			"dependencies": {
 				"xlib-d": "~>0.3.0"
 			},
