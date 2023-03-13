@@ -150,6 +150,8 @@ private void initializeVulkan() {
     pickPhysicalDevice();
 }
 
+//** ------------ BEGIN PHYSICAL DEVICE ---------------------
+
 void pickPhysicalDevice() {
     uint deviceCount = 0;
     
@@ -216,6 +218,11 @@ QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
     return indices;
 }
 
+//!! ------------ END PHYSICAL DEVICE -----------------------------
+
+
+//** ------------ BEGIN DEBUGGER ---------------------------------
+
 void populateDebugMessengerCreateInfo(ref VkDebugUtilsMessengerCreateInfoEXT createInfo) {
     createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
     createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
@@ -275,6 +282,11 @@ VkBool32 debugCallback(
 
     return VK_FALSE;
 }
+
+//!! --------------------- END DEBUGGER ----------------------------------------
+
+
+//** --------------------- BEGIN EXTENSIONS & VALIDATION --------------------
 
 string[] getRequiredExtensions() {
 
@@ -369,6 +381,8 @@ private void checkValidationLayerSupport() {
     }
     writeln("Vulkan: Requested Vulkan validation layers are all available!");
 }
+
+//!! ------------------------- END EXTENSIONS & VALIDATION ---------------------------------
 
 void destroy() {
     if (enableValidationLayers) {
