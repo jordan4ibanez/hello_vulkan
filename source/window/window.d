@@ -19,19 +19,18 @@ import erupted.platform_extensions;
 
 version(Windows) {
     import core.sys.windows.windows;
-
     mixin Platform_Extensions!USE_PLATFORM_WIN32_KHR;
-
     mixin(bindGLFW_Windows);
 }
 version(linuxwayland) {
     import wayland.native.client;
     mixin Platform_Extensions!USE_PLATFORM_WAYLAND_KHR;
-    mixin(gbindGLFW_Wayland);
+    mixin(bindGLFW_Wayland);
 }
-
 version(linuxx11) {
-    
+    public import X11.Xlib;
+    mixin Platform_Extensions!USE_PLATFORM_XLIB_KHR;
+    mixin(bindGLFW_X11);
 }
 
 mixin(bindGLFW_Vulkan);
@@ -198,8 +197,11 @@ void createWindowSurface() {
     version(Windows) {
         VkWin32SurfaceCreateInfoKHR createInfo;
     }
-    version(Linux) {
-        VkWin32SurfaceCreateInfoKHR createInfo;
+    version(linuxwayland) {
+        VkWaylandSurfaceCreateInfoKHR createInfo;
+    }
+    version(linuxx11) {
+        VkXlibSurfaceCreateInfoKHR createInfo;
     }
 
     createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
