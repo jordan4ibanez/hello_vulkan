@@ -4,7 +4,9 @@
 		"bindbc-glfw": "1.0.2",
 		"bindbc-loader": "1.0.3",
 		"delta_time": "1.0.5",
+		"derelict-util": "2.0.6",
 		"doml": "1.0.1",
-		"erupted": "2.1.87+v1.3.237"
+		"erupted": "2.1.87+v1.3.237",
+		"wayland": "0.3.1"
 	}
 }
