@@ -2,35 +2,50 @@
 	"authors": [
 		"jordan4ibanez"
 	],
+	"configurations": [
+		{
+			"name": "windows",
+			"platforms": [
+				"windows"
+			],
+			"targetType": "executable"
+		},
+		{
+			"dependencies": {
+				"wayland:client": "~>0.3.1"
+			},
+			"name": "linuxwayland",
+			"platforms": [
+				"linux"
+			],
+			"targetType": "executable"
+		},
+		{
+			"dependencies": {
+				"xlib-d": "~>0.3.0"
+			},
+			"name": "linuxx11",
+			"platforms": [
+				"linux"
+			],
+			"targetType": "executable"
+		}
+	],
 	"copyright": "Copyright © 2023, jordan4ibanez",
 	"dependencies": {
 		"bindbc-glfw": "~>1.0.2",
 		"delta_time": "~>1.0.5",
 		"doml": "~>1.0.1",
 		"erupted": "~>2.1.87"
-    },
-
-    "configurations": [
-        {
-            "name": "windows",
-            "platforms": ["windows"]
-        },
-        {
-            "name": "linux",
-            "dependencies": {
-                "wayland:client": "~>0.3.1"
-            },
-            "platforms": ["linux"]
-        }
-    ],
+	},
 	"description": "Watch me struggle as I attempt to open a window in vulkan.",
 	"libs-posix": [
 		"z"
 	],
 	"license": "MIT",
 	"name": "hello_vulkan",
+	"targetType": "executable",
 	"versions": [
 		"GLFW_33"
-	],
-    "targetType": "executable"
+	]
 }
