@@ -197,10 +197,10 @@ void createWindowSurface() {
     version(Windows) {
         VkWin32SurfaceCreateInfoKHR createInfo;
     }
-    version(linuxwayland) {
-        VkWaylandSurfaceCreateInfoKHR createInfo;
-    }
-    version(linuxx11) {
+    // version(linuxwayland) {
+    //     VkWaylandSurfaceCreateInfoKHR createInfo;
+    // }
+    version(linux) {
         VkXlibSurfaceCreateInfoKHR createInfo;
     }
 
