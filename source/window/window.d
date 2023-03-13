@@ -34,6 +34,8 @@ private int fpsCounter = 0;
 private int FPS = 0;
 
 // Vulkan fields
+
+bool excessiveDebug = false;
 mixin(bindGLFW_Vulkan);
 private VkInstance instance;
 VkDebugUtilsMessengerEXT debugMessenger;
@@ -124,8 +126,9 @@ private void initializeVulkan() {
     vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, cast(VkExtensionProperties*)vulkanExtensions.ptr);
 
     // Output available extensions into the terminal
-    if (false) {
-        writeln("VULKAN AVAILABLE EXTENSIONS:" ~
+    if (excessiveDebug) {
+        writeln("==================================\n" ~
+                "VULKAN AVAILABLE EXTENSIONS:\n" ~
                 "==================================");
         foreach (VkExtensionProperties thisExtension; vulkanExtensions) {
             writeln(split(to!string(thisExtension.extensionName), "\0")[0]);
@@ -266,6 +269,12 @@ private void checkValidationLayerSupport() {
     VkLayerProperties[] availableLayers = new VkLayerProperties[layerCount];
     vkEnumerateInstanceLayerProperties(&layerCount, cast(VkLayerProperties*)availableLayers.ptr);
 
+    if (excessiveDebug) {
+        writeln("============================\n" ~
+                "VULKAN VALIDATION LAYERS:\n"~
+                "============================"
+        );
+    }
     // Now let's see if it contains the one's we requested in validationLayers
     foreach (string layerName; validationLayers) {
         bool layerFound = false;
@@ -295,6 +304,10 @@ private void checkValidationLayerSupport() {
                 "Vulkan: Validation Layer " ~ layerName ~ " was requested but not available!\n" ~
                 "Is the Vulkan SDK installed? You can get it here: https://vulkan.lunarg.com/"
             );
+        } else {
+            if (excessiveDebug) {
+                writeln(layerName);
+            }
         }
     }
     writeln("Vulkan: Requested Vulkan validation layers are all available!");
