@@ -191,13 +191,16 @@ void createWindowSurface() {
 
     version(Windows) {
         VkWin32SurfaceCreateInfoKHR createInfo;
-    }
-    version(Linux) {
-        VkXlibSurfaceCreateInfoKHR createInfo;
-    }
 
-    createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-    createInfo.hwnd = glfwGetWin32Window(window);
+        createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+        createInfo.hwnd = glfwGetWin32Window(window);
+
+    } else version(Linux) {
+        VkXlibSurfaceCreateInfoKHR createInfo;
+
+        createInfo.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
+        createInfo.hwnd = glfwGetX11Window(window);
+    }
     createInfo.hinstance = GetModuleHandle(VK_NULL_HANDLE);
 }
 
