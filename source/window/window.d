@@ -384,6 +384,10 @@ private void checkValidationLayerSupport() {
 
 //!! ------------------------- END EXTENSIONS & VALIDATION ---------------------------------
 
+//! =================================================== END VULKAN TOOLS ==========================================
+
+//* ======== GLFW Tools ========
+
 void destroy() {
     if (enableValidationLayers) {
         destroyDebugUtilsMessengerEXT(instance, debugMessenger, VK_NULL_HANDLE);
@@ -395,18 +399,6 @@ void destroy() {
     glfwTerminate();
     writeln("GLFW 3.3 destroyed successfully!");
 }
-
-
-
-
-
-
-
-
-
-//! =================================================== END VULKAN TOOLS ==========================================
-
-//* ======== GLFW Tools ========
 
 // Returns success state 
 private bool initializeGLFWComponents() {
