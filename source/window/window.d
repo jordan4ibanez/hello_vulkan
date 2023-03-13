@@ -133,6 +133,27 @@ private void initializeVulkan() {
     }
 
     setupDebugMessenger();
+
+    pickPhysicalDevice();
+}
+
+void pickPhysicalDevice() {
+    uint deviceCount = 0;
+    
+    vkEnumeratePhysicalDevices(instance, &deviceCount, VK_NULL_HANDLE);
+
+    if (deviceCount == 0) {
+        throw new Exception("Vulkan: Failed to find a GPU with Vulkan support!");
+    }
+
+    VkPhysicalDevice[] devices = new VkPhysicalDevice[deviceCount];
+    // vkEnumeratePhysicalDevices(instance, &deviceCount, &devices);
+
+
+}
+
+bool isDeviceSuitable(VkPhysicalDevice device) {
+    return true;
 }
 
 void populateDebugMessengerCreateInfo(ref VkDebugUtilsMessengerCreateInfoEXT createInfo) {
