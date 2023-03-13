@@ -37,6 +37,7 @@ private int FPS = 0;
 mixin(bindGLFW_Vulkan);
 private VkInstance instance;
 VkDebugUtilsMessengerEXT debugMessenger;
+VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
 //! I wrote it how the C++ tutorial runs but we want this to ALWAYS check
 // debug {
@@ -120,7 +121,7 @@ private void initializeVulkan() {
     vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, VK_NULL_HANDLE);
 
     VkExtensionProperties[] vulkanExtensions = new VkExtensionProperties[extensionCount];
-    vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, cast(VkExtensionProperties*)&vulkanExtensions[0]);
+    vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, cast(VkExtensionProperties*)vulkanExtensions.ptr);
 
     // Output available extensions into the terminal
     if (false) {
