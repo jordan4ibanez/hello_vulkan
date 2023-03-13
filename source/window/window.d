@@ -209,6 +209,7 @@ QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
     foreach (size_t key, VkQueueFamilyProperties thisQueueFamily; queueFamilies) {
         if (thisQueueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             indices.graphicsFamily = cast(uint)key;
+            break;
         }
     }
 
