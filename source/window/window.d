@@ -175,8 +175,9 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
     VkPhysicalDeviceProperties deviceProperties;
     vkGetPhysicalDeviceProperties(device, &deviceProperties);
     
-    VkPhysicalDeviceFeatures deviceFeatures;
-    vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+    //! Can use this to check if a device has features
+    // VkPhysicalDeviceFeatures deviceFeatures;
+    // vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
     // Check if there's a queue that supports graphics commands
     QueueFamilyIndices indices = findQueueFamilies(device);
@@ -188,7 +189,7 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
         writeln("Vulkan: Selected GPU -> [ ", gpuName, " ]");
     }
 
-    return true;
+    return hasGraphicsCommands;
 }
 
 QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
