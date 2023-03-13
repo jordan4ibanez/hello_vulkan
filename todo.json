@@ -1,0 +1,12 @@
+{
+    {
+        "dependencies": {
+            "wayland:client": "~>0.3.1"
+        },
+        "name": "linuxwayland",
+        "platforms": [
+            "linux"
+        ],
+        "targetType": "executable"
+    },
+}
