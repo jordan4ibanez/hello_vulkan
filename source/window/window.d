@@ -12,14 +12,22 @@ import delta_time;
 
 //! These are EXTREMELY important platform dependent imports
 
-import core.sys.windows.windows;
-
 import erupted;
 import erupted.types;
 import erupted.vulkan_lib_loader;
 import erupted.platform_extensions;
 
-mixin Platform_Extensions!USE_PLATFORM_WIN32_KHR;
+version(Windows) {
+    import core.sys.windows.windows;
+
+    mixin Platform_Extensions!USE_PLATFORM_WIN32_KHR;
+}
+version(Linux) {
+    import wayland.native.client;
+
+    mixin Platform_Extensions!USE_PLATFORM_WAYLAND_KHR;
+}
+
 mixin(bindGLFW_Vulkan);
 mixin(bindGLFW_Windows);
 
