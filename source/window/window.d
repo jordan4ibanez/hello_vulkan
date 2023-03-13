@@ -24,10 +24,14 @@ version(Windows) {
 
     mixin(bindGLFW_Windows);
 }
-version(Linux) {
+version(linuxwayland) {
     import wayland.native.client;
-
     mixin Platform_Extensions!USE_PLATFORM_WAYLAND_KHR;
+    mixin(gbindGLFW_Wayland);
+}
+
+version(linuxx11) {
+    
 }
 
 mixin(bindGLFW_Vulkan);
@@ -191,7 +195,13 @@ void createWindowSurface() {
     //Todo: This needs to do Windows vs Linux check here
     //Todo: Test this on Linux with X11 & Wayland
 
-    VkWin32SurfaceCreateInfoKHR createInfo;
+    version(Windows) {
+        VkWin32SurfaceCreateInfoKHR createInfo;
+    }
+    version(Linux) {
+        VkWin32SurfaceCreateInfoKHR createInfo;
+    }
+
     createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
     createInfo.hwnd = glfwGetWin32Window(window);
     createInfo.hinstance = GetModuleHandle(VK_NULL_HANDLE);
