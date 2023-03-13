@@ -22,12 +22,7 @@ version(Windows) {
     mixin Platform_Extensions!USE_PLATFORM_WIN32_KHR;
     mixin(bindGLFW_Windows);
 }
-version(linuxwayland) {
-    import wayland.native.client;
-    mixin Platform_Extensions!USE_PLATFORM_WAYLAND_KHR;
-    mixin(bindGLFW_Wayland);
-}
-version(linuxx11) {
+version(linux) {
     public import X11.Xlib;
     mixin Platform_Extensions!USE_PLATFORM_XLIB_KHR;
     mixin(bindGLFW_X11);
@@ -197,9 +192,6 @@ void createWindowSurface() {
     version(Windows) {
         VkWin32SurfaceCreateInfoKHR createInfo;
     }
-    // version(linuxwayland) {
-    //     VkWaylandSurfaceCreateInfoKHR createInfo;
-    // }
     version(linux) {
         VkXlibSurfaceCreateInfoKHR createInfo;
     }

@@ -1,3 +1,13 @@
+version(linuxwayland) {
+    import wayland.native.client;
+    mixin Platform_Extensions!USE_PLATFORM_WAYLAND_KHR;
+    mixin(bindGLFW_Wayland);
+}
+
+version(linuxwayland) {
+    VkWaylandSurfaceCreateInfoKHR createInfo;
+}
+
 {
     {
         "dependencies": {
