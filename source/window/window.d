@@ -150,7 +150,7 @@ void pickPhysicalDevice() {
     }
 
     VkPhysicalDevice[] devices = new VkPhysicalDevice[deviceCount];
-    // vkEnumeratePhysicalDevices(instance, &deviceCount, &devices);
+    vkEnumeratePhysicalDevices(instance, &deviceCount, devices.ptr);
 
 
 }
