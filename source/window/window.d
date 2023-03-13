@@ -152,8 +152,8 @@ private void initializeVulkan() {
 
     // Now load up calls from Erupted into memory
     loadDeviceLevelFunctions(instance);
-
-
+    
+    createLogicalDevice();
 }
 
 //!! ---------------- END VULKAN INIT -------------------------------
@@ -164,6 +164,18 @@ private void initializeVulkan() {
 
 
 void createLogicalDevice() {
+    QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+    
+    VkDeviceQueueCreateInfo queueCreateInfo;
+    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.get();
+    queueCreateInfo.queueCount = 1;
+
+    float queuePriority = 1.0f;
+    queueCreateInfo.pQueuePriorities = &queuePriority;
+
+    was here
+
 
 }
 
