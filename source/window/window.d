@@ -152,6 +152,21 @@ void pickPhysicalDevice() {
     VkPhysicalDevice[] devices = new VkPhysicalDevice[deviceCount];
     vkEnumeratePhysicalDevices(instance, &deviceCount, devices.ptr);
 
+    foreach (VkPhysicalDevice thisDevice; devices) {
+        if (isDeviceSuitable(thisDevice)) {
+            physicalDevice = thisDevice;
+            break;
+        }
+    }
+
+    if (physicalDevice == VK_NULL_HANDLE) {
+        throw new Exception("Vulkan: Failed to find a suitable GPU!");
+    }
+
+    VkPhysicalDeviceProperties deviceProperties;
+    vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
+    
+    writeln("Vulkan: Selected GPU -> [ ", to!string(deviceProperties.deviceName), " ]");
 
 }
 
