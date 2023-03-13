@@ -22,7 +22,7 @@ version(Windows) {
     mixin Platform_Extensions!USE_PLATFORM_WIN32_KHR;
     mixin(bindGLFW_Windows);
 }
-version(linux) {
+version(Linux) {
     public import X11.Xlib;
     mixin Platform_Extensions!USE_PLATFORM_XLIB_KHR;
     mixin(bindGLFW_X11);
@@ -192,7 +192,7 @@ void createWindowSurface() {
     version(Windows) {
         VkWin32SurfaceCreateInfoKHR createInfo;
     }
-    version(linux) {
+    version(Linux) {
         VkXlibSurfaceCreateInfoKHR createInfo;
     }
 
