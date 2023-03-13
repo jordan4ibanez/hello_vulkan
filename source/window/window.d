@@ -63,8 +63,13 @@ void initialize() {
 
 //* =================================================== VULKAN TOOLS ========================================
 
-struct QueueFamilyIndices {
+private struct QueueFamilyIndices {
     Nullable!uint graphicsFamily;
+
+    /// Check if the graphics family index exists
+    bool isComplete() {
+        return !this.graphicsFamily.isNull();
+    }
 }
 
 private void initializeVulkan() {
@@ -182,7 +187,7 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
     // Check if there's a queue that supports graphics commands
     QueueFamilyIndices indices = findQueueFamilies(device);
 
-    bool hasGraphicsCommands = !indices.graphicsFamily.isNull();
+    bool hasGraphicsCommands = indices.isComplete();
     if (hasGraphicsCommands) {
         string gpuName = to!string(deviceProperties.deviceName);
         writeln("Vulkan: ", gpuName, " has graphics commands queue!");
@@ -193,6 +198,7 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
 }
 
 QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
+
     QueueFamilyIndices indices;
     
     uint queueFamilyCount = 0;
