@@ -62,6 +62,10 @@ void initialize() {
 
 //* =================================================== VULKAN TOOLS ========================================
 
+struct QueueFamilyIndices {
+    uint graphicsFamily;
+}
+
 private void initializeVulkan() {
 
     // Attempt to load the BindBC Vulkan library
@@ -138,6 +142,24 @@ private void initializeVulkan() {
     setupDebugMessenger();
 
     pickPhysicalDevice();
+}
+
+QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
+    QueueFamilyIndices indices;
+    
+    uint queueFamilyCount = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, VK_NULL_HANDLE);
+    VkQueueFamilyProperties[] queueFamilies = new VkQueueFamilyProperties[queueFamilyCount];
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.ptr);
+
+    foreach (size_t key, VkQueueFamilyProperties thisQueueFamily; queueFamilies) {
+        if (thisQueueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+            indices.graphicsFamily = cast(uint)key;
+        }
+    }
+
+
+    return indices;
 }
 
 void pickPhysicalDevice() {
