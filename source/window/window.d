@@ -264,7 +264,7 @@ private void checkValidationLayerSupport() {
     uint layerCount = 0;
     vkEnumerateInstanceLayerProperties(&layerCount, VK_NULL_HANDLE);
     VkLayerProperties[] availableLayers = new VkLayerProperties[layerCount];
-    vkEnumerateInstanceLayerProperties(&layerCount, cast(VkLayerProperties*)&availableLayers[0]);
+    vkEnumerateInstanceLayerProperties(&layerCount, cast(VkLayerProperties*)availableLayers.ptr);
 
     // Now let's see if it contains the one's we requested in validationLayers
     foreach (string layerName; validationLayers) {
