@@ -41,6 +41,7 @@ mixin(bindGLFW_Vulkan);
 private VkInstance instance;
 VkDebugUtilsMessengerEXT debugMessenger;
 VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+VkDevice device;
 
 //! I wrote it how the C++ tutorial runs but we want this to ALWAYS check
 // debug {
@@ -174,7 +175,30 @@ void createLogicalDevice() {
     float queuePriority = 1.0f;
     queueCreateInfo.pQueuePriorities = &queuePriority;
 
-    was here
+    VkPhysicalDeviceFeatures deviceFeatures;
+
+    VkDeviceCreateInfo createInfo;
+    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    createInfo.pQueueCreateInfos = &queueCreateInfo;
+    createInfo.queueCreateInfoCount = 1;
+
+    createInfo.pEnabledFeatures = &deviceFeatures;
+
+
+    createInfo.enabledExtensionCount = 0;
+
+    if (enableValidationLayers) {
+        createInfo.enabledLayerCount = cast(uint)validationLayers.length;
+        createInfo.ppEnabledLayerNames = convertToCStringArray(validationLayers);
+    } else {
+        createInfo.enabledLayerCount = 0;
+    }
+
+    if (vkCreateDevice(physicalDevice, &createInfo, VK_NULL_HANDLE, &device) != VK_SUCCESS) {
+        throw new Exception("Vulkan: Failed to create logical device!");
+    }
+
+
 
 
 }
@@ -428,6 +452,7 @@ void destroy() {
         destroyDebugUtilsMessengerEXT(instance, debugMessenger, VK_NULL_HANDLE);
         writeln("Vulkan: Destroyed debugger!");
     }
+    vkDestroyDevice(device, VK_NULL_HANDLE);
     vkDestroyInstance(instance, VK_NULL_HANDLE);
     writeln("Vulkan: Instance destroyed successfully!");
     glfwDestroyWindow(window);
