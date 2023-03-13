@@ -21,6 +21,8 @@ version(Windows) {
     import core.sys.windows.windows;
 
     mixin Platform_Extensions!USE_PLATFORM_WIN32_KHR;
+
+    mixin(bindGLFW_Windows);
 }
 version(Linux) {
     import wayland.native.client;
@@ -29,7 +31,6 @@ version(Linux) {
 }
 
 mixin(bindGLFW_Vulkan);
-mixin(bindGLFW_Windows);
 
 //! End EXTREMELY important platform dependent imports
 
