@@ -39,13 +39,13 @@ private int FPS = 0;
 // Vulkan fields
 
 bool excessiveDebug = false;
+//! This field is important, automates including vulkan glfw code into module scope
 mixin(bindGLFW_Vulkan);
 private VkInstance instance;
 VkDebugUtilsMessengerEXT debugMessenger;
 VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 VkDevice device;
 VkQueue graphicsQueue;
-
 VkSurfaceKHR surface;
 
 //! I wrote it how the C++ tutorial runs but we want this to ALWAYS check
@@ -79,6 +79,7 @@ private struct QueueFamilyIndices {
 }
 
 //** ---------------- BEGIN VULKAN INIT --------------------------------------------
+
 private void initializeVulkan() {
 
     // Attempt to load the BindBC Vulkan library
@@ -163,6 +164,8 @@ private void initializeVulkan() {
 }
 
 //!! ---------------- END VULKAN INIT -------------------------------
+
+
 
 
 
