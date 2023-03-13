@@ -72,6 +72,7 @@ private struct QueueFamilyIndices {
     }
 }
 
+//** ---------------- BEGIN VULKAN INIT --------------------------------------------
 private void initializeVulkan() {
 
     // Attempt to load the BindBC Vulkan library
@@ -148,7 +149,29 @@ private void initializeVulkan() {
     setupDebugMessenger();
 
     pickPhysicalDevice();
+
+    // Now load up calls from Erupted into memory
+    loadDeviceLevelFunctions(instance);
+
+
 }
+
+//!! ---------------- END VULKAN INIT -------------------------------
+
+
+
+//** ---------------------- BEGIN LOGICAL DEVICE -------------------
+
+
+void createLogicalDevice() {
+
+}
+
+
+
+//!! ------------------------- END LOGICAL DEVICE ----------------------
+
+
 
 //** ------------ BEGIN PHYSICAL DEVICE ---------------------
 
