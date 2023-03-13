@@ -4,6 +4,7 @@ import std.stdio;
 import std.conv;
 import std.string;
 import std.array;
+import std.typecons;
 import doml.vector_2i;
 import doml.vector_2d;
 import doml.vector_3d;
@@ -63,7 +64,7 @@ void initialize() {
 //* =================================================== VULKAN TOOLS ========================================
 
 struct QueueFamilyIndices {
-    uint graphicsFamily;
+    Nullable!uint graphicsFamily;
 }
 
 private void initializeVulkan() {
@@ -144,24 +145,6 @@ private void initializeVulkan() {
     pickPhysicalDevice();
 }
 
-QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
-    QueueFamilyIndices indices;
-    
-    uint queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, VK_NULL_HANDLE);
-    VkQueueFamilyProperties[] queueFamilies = new VkQueueFamilyProperties[queueFamilyCount];
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.ptr);
-
-    foreach (size_t key, VkQueueFamilyProperties thisQueueFamily; queueFamilies) {
-        if (thisQueueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-            indices.graphicsFamily = cast(uint)key;
-        }
-    }
-
-
-    return indices;
-}
-
 void pickPhysicalDevice() {
     uint deviceCount = 0;
     
@@ -197,9 +180,29 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
 
     // Suitable check goes here yada yada
 
+    
     writeln("Vulkan: Selected GPU -> [ ", to!string(deviceProperties.deviceName), " ]");
 
     return true;
+}
+
+QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
+    QueueFamilyIndices indices;
+    
+    uint queueFamilyCount = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, VK_NULL_HANDLE);
+    VkQueueFamilyProperties[] queueFamilies = new VkQueueFamilyProperties[queueFamilyCount];
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.ptr);
+
+    foreach (size_t key, VkQueueFamilyProperties thisQueueFamily; queueFamilies) {
+        if (thisQueueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+            writeln("hi");
+            indices.graphicsFamily = cast(uint)key;
+        }
+    }
+
+
+    return indices;
 }
 
 void populateDebugMessengerCreateInfo(ref VkDebugUtilsMessengerCreateInfoEXT createInfo) {
