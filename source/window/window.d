@@ -164,10 +164,10 @@ void pickPhysicalDevice() {
     }
 
     //! Remember to turn this back on so it looks nice
-    // VkPhysicalDeviceProperties deviceProperties;
-    // vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
+    VkPhysicalDeviceProperties deviceProperties;
+    vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
     
-    // writeln("Vulkan: Selected GPU -> [ ", to!string(deviceProperties.deviceName), " ]");
+    writeln("Vulkan: Selected GPU -> [ ", to!string(deviceProperties.deviceName), " ]");
 
 }
 
