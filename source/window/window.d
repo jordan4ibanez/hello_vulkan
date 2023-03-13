@@ -10,9 +10,20 @@ import doml.vector_2d;
 import doml.vector_3d;
 import delta_time;
 
+//! These are EXTREMELY important platform dependent imports
+
+import core.sys.windows.windows;
+
 import erupted;
 import erupted.types;
 import erupted.vulkan_lib_loader;
+import erupted.platform_extensions;
+
+mixin Platform_Extensions!USE_PLATFORM_WIN32_KHR;
+mixin(bindGLFW_Vulkan);
+mixin(bindGLFW_Windows);
+
+//! End EXTREMELY important platform dependent imports
 
 // This is a special import. We only want to extract the loader from this module.
 import loader = bindbc.loader.sharedlib;
@@ -40,7 +51,6 @@ private int FPS = 0;
 
 bool excessiveDebug = false;
 //! This field is important, automates including vulkan glfw code into module scope
-mixin(bindGLFW_Vulkan);
 private VkInstance instance;
 VkDebugUtilsMessengerEXT debugMessenger;
 VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -161,10 +171,22 @@ private void initializeVulkan() {
     loadDeviceLevelFunctions(instance);
     
     createLogicalDevice();
+
+
 }
 
 //!! ---------------- END VULKAN INIT -------------------------------
 
+void createWindowSurface() {
+    // Now we're creating the window surface
+    //Todo: This needs to do Windows vs Linux check here
+    //Todo: Test this on Linux with X11 & Wayland
+
+    VkWin32SurfaceCreateInfoKHR createInfo;
+    createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+    createInfo.hwnd = glfwGetWin32Window(window);
+    createInfo.hinstance = GetModuleHandle(VK_NULL_HANDLE);
+}
 
 
 
