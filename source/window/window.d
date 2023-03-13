@@ -163,15 +163,20 @@ void pickPhysicalDevice() {
         throw new Exception("Vulkan: Failed to find a suitable GPU!");
     }
 
-    //! Remember to turn this back on so it looks nice
-    VkPhysicalDeviceProperties deviceProperties;
-    vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
-    
-    writeln("Vulkan: Selected GPU -> [ ", to!string(deviceProperties.deviceName), " ]");
-
 }
 
 bool isDeviceSuitable(VkPhysicalDevice device) {
+
+    VkPhysicalDeviceProperties deviceProperties;
+    vkGetPhysicalDeviceProperties(device, &deviceProperties);
+    
+    VkPhysicalDeviceFeatures deviceFeatures;
+    vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+
+    // Suitable check goes here yada yada
+
+    writeln("Vulkan: Selected GPU -> [ ", to!string(deviceProperties.deviceName), " ]");
+
     return true;
 }
 
