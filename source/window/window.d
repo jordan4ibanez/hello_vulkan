@@ -178,10 +178,15 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
     VkPhysicalDeviceFeatures deviceFeatures;
     vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
-    // Suitable check goes here yada yada
+    // Check if there's a queue that supports graphics commands
+    QueueFamilyIndices indices = findQueueFamilies(device);
 
-    
-    writeln("Vulkan: Selected GPU -> [ ", to!string(deviceProperties.deviceName), " ]");
+    bool hasGraphicsCommands = !indices.graphicsFamily.isNull();
+    if (hasGraphicsCommands) {
+        string gpuName = to!string(deviceProperties.deviceName);
+        writeln("Vulkan: ", gpuName, " has graphics commands queue!");
+        writeln("Vulkan: Selected GPU -> [ ", gpuName, " ]");
+    }
 
     return true;
 }
@@ -196,11 +201,9 @@ QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
 
     foreach (size_t key, VkQueueFamilyProperties thisQueueFamily; queueFamilies) {
         if (thisQueueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-            writeln("hi");
             indices.graphicsFamily = cast(uint)key;
         }
     }
-
 
     return indices;
 }
