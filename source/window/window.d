@@ -42,6 +42,7 @@ private VkInstance instance;
 VkDebugUtilsMessengerEXT debugMessenger;
 VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 VkDevice device;
+VkQueue graphicsQueue;
 
 //! I wrote it how the C++ tutorial runs but we want this to ALWAYS check
 // debug {
@@ -198,8 +199,7 @@ void createLogicalDevice() {
         throw new Exception("Vulkan: Failed to create logical device!");
     }
 
-
-
+    vkGetDeviceQueue(device, indices.graphicsFamily.get(), 0, &graphicsQueue);
 
 }
 
