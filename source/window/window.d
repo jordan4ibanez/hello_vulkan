@@ -9,7 +9,9 @@ import doml.vector_2i;
 import doml.vector_2d;
 import doml.vector_3d;
 import delta_time;
+
 import erupted;
+import erupted.types;
 import erupted.vulkan_lib_loader;
 
 // This is a special import. We only want to extract the loader from this module.
@@ -43,6 +45,8 @@ VkDebugUtilsMessengerEXT debugMessenger;
 VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 VkDevice device;
 VkQueue graphicsQueue;
+
+VkSurfaceKHR surface;
 
 //! I wrote it how the C++ tutorial runs but we want this to ALWAYS check
 // debug {
@@ -200,7 +204,6 @@ void createLogicalDevice() {
     }
 
     vkGetDeviceQueue(device, indices.graphicsFamily.get(), 0, &graphicsQueue);
-
 }
 
 
