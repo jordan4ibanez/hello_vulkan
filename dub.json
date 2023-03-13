@@ -11,10 +11,10 @@
 			"targetType": "executable"
 		},
 		{
+            "name": "linux",
 			"dependencies": {
 				"xlib-d": "~>0.3.0"
 			},
-			"name": "linuxx11",
 			"platforms": [
 				"linux"
 			],
