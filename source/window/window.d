@@ -179,7 +179,7 @@ private void initializeVulkan() {
 //!! ---------------- BEGIN SURFACE TOOLS ---------------------------
 
 
-void createSurface() {
+private void createSurface() {
 
     if (glfwCreateWindowSurface(instance, window, VK_NULL_HANDLE, &surface) != VK_SUCCESS) {
         throw new Exception("Vulkan: Failed to create window surface!");
