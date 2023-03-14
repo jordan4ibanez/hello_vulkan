@@ -170,10 +170,10 @@ private void initializeVulkan() {
 
     createSurface();
 
-    pickPhysicalDevice();
-
     // Now load up calls from Erupted into memory
     loadDeviceLevelFunctions(instance);
+
+    pickPhysicalDevice();
     
     createLogicalDevice();
 }
@@ -237,7 +237,9 @@ void createLogicalDevice() {
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
     createInfo.queueCreateInfoCount = cast(uint)queueCreateInfos.length;
     createInfo.pQueueCreateInfos = queueCreateInfos.ptr;
-    createInfo.enabledExtensionCount = 0;
+    
+    createInfo.enabledExtensionCount = cast(uint)deviceExtensions.length;
+    createInfo.ppEnabledExtensionNames = convertToCStringArray(deviceExtensions);
 
     // Physical device features
     VkPhysicalDeviceFeatures deviceFeatures;
