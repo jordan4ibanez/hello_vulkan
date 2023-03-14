@@ -478,6 +478,7 @@ void destroy() {
         destroyDebugUtilsMessengerEXT(instance, debugMessenger, VK_NULL_HANDLE);
         writeln("Vulkan: Destroyed debugger!");
     }
+    vkDestroySurfaceKHR(instance, surface, null);
     vkDestroyDevice(device, VK_NULL_HANDLE);
     vkDestroyInstance(instance, VK_NULL_HANDLE);
     writeln("Vulkan: Instance destroyed successfully!");
