@@ -17,7 +17,7 @@ import erupted.types;
 import erupted.vulkan_lib_loader;
 import erupted.platform_extensions;
 
-// import loader = bindbc.loader.sharedlib;
+import loader = bindbc.loader.sharedlib;
 import bindbc.glfw;
 
 version(Windows) {
@@ -28,7 +28,7 @@ version(Windows) {
 
 } else version(Posix) {
 
-    public import X11.Xlib;
+    public import x11.extensions.Xrandr;
     mixin Platform_Extensions!USE_PLATFORM_XLIB_KHR;
     mixin(bindGLFW_X11);
 
