@@ -12,7 +12,7 @@
 		},
 		{
 			"dependencies": {
-				"xlib-d": "~>0.3.0"
+                "x11": "~>1.0.21"
 			},
 			"name": "Linux",
 			"platforms": [
