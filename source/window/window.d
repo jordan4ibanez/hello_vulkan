@@ -74,12 +74,14 @@ void initialize() {
 
 //* =================================================== VULKAN TOOLS ========================================
 
+// Simply holds instruction queues
 private struct QueueFamilyIndices {
     Nullable!uint graphicsFamily;
+    Nullable!uint presentFamily;
 
     /// Check if the graphics family index exists
     bool isComplete() {
-        return !this.graphicsFamily.isNull();
+        return !this.graphicsFamily.isNull() && !this.presentFamily.isNull();
     }
 }
 
