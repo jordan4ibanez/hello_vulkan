@@ -4,6 +4,7 @@
 	],
 	"copyright": "Copyright © 2023, jordan4ibanez",
 	"dependencies": {
+		"aaset": "~>0.2.5",
 		"bindbc-glfw": "~>1.0.2",
 		"delta_time": "~>1.0.5",
 		"doml": "~>1.0.1",
