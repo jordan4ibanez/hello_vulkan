@@ -197,24 +197,49 @@ void createSurface() {
 
 
 void createLogicalDevice() {
-    QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+
     
+    QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+
+    VkDeviceQueueCreateInfo[] queueCreateInfos;
+    
+    AAset!uint uniqueQueueFamilies;
+    uniqueQueueFamilies.add(indices.graphicsFamily.get());
+    uniqueQueueFamilies.add(indices.presentFamily.get());
+
+    float queuePriority = 1.0f;
+
+    // Create the queue
+    foreach (uint queueFamily; uniqueQueueFamilies) {
+
+        VkDeviceQueueCreateInfo queueCreateInfo;
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = queueFamily;
+        queueCreateInfo.queueCount = 1;
+        queueCreateInfo.pQueuePriorities = &queuePriority;
+
+        queueCreateInfos ~= queueCreateInfo;
+    }
+
+    ///!! THIS IS THE UNMODIFIED PART =====================
+
+    // Create info queue
     VkDeviceQueueCreateInfo queueCreateInfo;
     queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
     queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.get();
     queueCreateInfo.queueCount = 1;
-
-    float queuePriority = 1.0f;
     queueCreateInfo.pQueuePriorities = &queuePriority;
 
-    VkPhysicalDeviceFeatures deviceFeatures;
+    // Create Info
     VkDeviceCreateInfo createInfo;
-
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.pQueueCreateInfos = &queueCreateInfo;
-    createInfo.queueCreateInfoCount = 1;
-    createInfo.pEnabledFeatures = &deviceFeatures;
+    createInfo.queueCreateInfoCount = cast(uint)queueCreateInfos.length;
+    createInfo.pQueueCreateInfos = queueCreateInfos.ptr;
     createInfo.enabledExtensionCount = 0;
+
+    VkPhysicalDeviceFeatures deviceFeatures;
+    createInfo.pEnabledFeatures = &deviceFeatures;
+    
 
     if (enableValidationLayers) {
         createInfo.enabledLayerCount = cast(uint)validationLayers.length;
@@ -226,8 +251,8 @@ void createLogicalDevice() {
     if (vkCreateDevice(physicalDevice, &createInfo, VK_NULL_HANDLE, &device) != VK_SUCCESS) {
         throw new Exception("Vulkan: Failed to create logical device!");
     }
-
-    vkGetDeviceQueue(device, indices.graphicsFamily.get(), 0, &graphicsQueue);
+    
+    vkGetDeviceQueue(device, indices.presentFamily.get(), 0, &presentQueue);
 }
 
 
