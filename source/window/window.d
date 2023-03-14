@@ -295,9 +295,17 @@ QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
     VkQueueFamilyProperties[] queueFamilies = new VkQueueFamilyProperties[queueFamilyCount];
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.ptr);
 
+    // Find a GPU that can intake graphics instructions
     foreach (size_t key, VkQueueFamilyProperties thisQueueFamily; queueFamilies) {
-        if (thisQueueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-            indices.graphicsFamily = cast(uint)key;
+        uint i = cast(uint)key;
+
+        // Enforce selection of GPU that can render to window surface
+        VkBool32 presentSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
+
+        if (thisQueueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT && presentSupport == VK_TRUE) {
+            indices.graphicsFamily = i;
+            indices.presentFamily = i;
             break;
         }
     }
