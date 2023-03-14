@@ -193,10 +193,10 @@ void createWindowSurface() {
     VkWin32SurfaceCreateInfoKHR createInfo;
     createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
     createInfo.hwnd = glfwGetWin32Window(window);
-    // createInfo.hinstance = GetModuleHandle(VK_NULL_HANDLE);
-    // if (vkCreateWin32SurfaceKHR(instance, &createInfo, VK_NULL_HANDLE, &surface) != VK_SUCCESS) {
-    //     throw new Exception("Vulkan: Failed to create Win32 window surface!");
-    // }
+    createInfo.hinstance = GetModuleHandle(VK_NULL_HANDLE);
+    if (vkCreateWin32SurfaceKHR(instance, &createInfo, VK_NULL_HANDLE, &surface) != VK_SUCCESS) {
+        throw new Exception("Vulkan: Failed to create Win32 window surface!");
+    }
     writeln("Vulkan: Successfully created Win32 surface!");
 }
 }
