@@ -21,8 +21,7 @@ version(Windows) {
     import core.sys.windows.windows;
     mixin Platform_Extensions!USE_PLATFORM_WIN32_KHR;
     mixin(bindGLFW_Windows);
-}
-version(Linux) {
+} else version(Linux) {
     public import X11.Xlib;
     mixin Platform_Extensions!USE_PLATFORM_XLIB_KHR;
     mixin(bindGLFW_X11);
@@ -188,34 +187,32 @@ private void initializeVulkan() {
 
 version(Windows) {
 
-void createWindowSurface() {
-    // Now we're creating the window surface on Windows
-    VkWin32SurfaceCreateInfoKHR createInfo;
-    createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-    createInfo.hwnd = glfwGetWin32Window(window);
-    createInfo.hinstance = GetModuleHandle(VK_NULL_HANDLE);
-    if (vkCreateWin32SurfaceKHR(instance, &createInfo, VK_NULL_HANDLE, &surface) != VK_SUCCESS) {
-        throw new Exception("Vulkan: Failed to create Win32 window surface!");
+    void createWindowSurface() {
+        // Now we're creating the window surface on Windows
+        VkWin32SurfaceCreateInfoKHR createInfo;
+        createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+        createInfo.hwnd = glfwGetWin32Window(window);
+        createInfo.hinstance = GetModuleHandle(VK_NULL_HANDLE);
+        if (vkCreateWin32SurfaceKHR(instance, &createInfo, VK_NULL_HANDLE, &surface) != VK_SUCCESS) {
+            throw new Exception("Vulkan: Failed to create Win32 window surface!");
+        }
+        writeln("Vulkan: Successfully created Win32 surface!");
     }
-    writeln("Vulkan: Successfully created Win32 surface!");
-}
-}
 
-version(Linux) {
+} else version(Linux) {
 
-void createWindowSurface() {
-    // Now we're creating the window surface on X11
-    VkXlibSurfaceCreateInfoKHR createInfo;
-    createInfo.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
-    createInfo.hwnd = glfwGetX11Window(window);
-    createInfo.hinstance = GetModuleHandle(VK_NULL_HANDLE);
+    void createWindowSurface() {
+        // Now we're creating the window surface on X11
+        VkXlibSurfaceCreateInfoKHR createInfo;
+        createInfo.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
+        createInfo.hwnd = glfwGetX11Window(window);
+        createInfo.hinstance = GetModuleHandle(VK_NULL_HANDLE);
 
-    if (vkCreateXlibSurfaceKHR(instance, &createInfo, VK_NULL_HANDLE, &surface) != VK_SUCCESS) {
-        throw new Exception("Vulkan: Failed to create X11 window surface!");
+        if (vkCreateXlibSurfaceKHR(instance, &createInfo, VK_NULL_HANDLE, &surface) != VK_SUCCESS) {
+            throw new Exception("Vulkan: Failed to create X11 window surface!");
+        }
+        writeln("Vulkan: Successfully created X11 surface!");
     }
-    writeln("Vulkan: Successfully created X11 surface!");
-}
-
 }
 
 
@@ -565,14 +562,17 @@ private bool initializeGLFWComponents() {
 }
 
 version(Windows) {
-private void initializeAdditionalComponents() {
-    loadGLFW_Windows();
-}
-}
-version(Linux) {
-private void initializeAdditionalComponents() {
-    loadGLFW_X11();
-}
+
+    private void initializeAdditionalComponents() {
+        loadGLFW_Windows();
+    }
+
+} else version(Linux) {
+
+    private void initializeAdditionalComponents() {
+        loadGLFW_X11();
+    }
+
 }
 
 
