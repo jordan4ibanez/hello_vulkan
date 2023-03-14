@@ -525,27 +525,8 @@ private bool initializeGLFWComponents() {
         return false;
     }
 
-    // initializeAdditionalComponents();
-
     return true;
 }
-
-// version(Windows) {
-
-//     private void initializeAdditionalComponents() {
-//         writeln("loading windows version");
-//         loadGLFW_Windows();
-//     }
-
-// } else version(Posix) {
-
-//     private void initializeAdditionalComponents() {
-//         writeln("loading linux version");
-//         loadGLFW_X11();
-//     }
-
-// }
-
 
 
 
