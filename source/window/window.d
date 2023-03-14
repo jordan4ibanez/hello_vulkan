@@ -42,7 +42,7 @@ private Vector3d clearColor;
 private string title;
 private Vector2i windowSize;
 
-private  GLFWwindow* window = null;
+private GLFWwindow* window = null;
 private GLFWmonitor* monitor = null;
 private GLFWvidmode videoMode;
 private bool fullscreen = false;
@@ -179,7 +179,7 @@ private void initializeVulkan() {
     
     createLogicalDevice();
 
-
+    createWindowSurface();
 }
 
 //!! ---------------- END VULKAN INIT -------------------------------
@@ -193,10 +193,11 @@ void createWindowSurface() {
     VkWin32SurfaceCreateInfoKHR createInfo;
     createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
     createInfo.hwnd = glfwGetWin32Window(window);
-    createInfo.hinstance = GetModuleHandle(VK_NULL_HANDLE);
-    if (vkCreateWin32SurfaceKHR(instance, &createInfo, VK_NULL_HANDLE, &surface) != VK_SUCCESS) {
-        throw new Exception("Vulkan: Failed to create Win32 window surface!");
-    }
+    // createInfo.hinstance = GetModuleHandle(VK_NULL_HANDLE);
+    // if (vkCreateWin32SurfaceKHR(instance, &createInfo, VK_NULL_HANDLE, &surface) != VK_SUCCESS) {
+    //     throw new Exception("Vulkan: Failed to create Win32 window surface!");
+    // }
+    writeln("Vulkan: Successfully created Win32 surface!");
 }
 }
 
@@ -212,6 +213,7 @@ void createWindowSurface() {
     if (vkCreateXlibSurfaceKHR(instance, &createInfo, VK_NULL_HANDLE, &surface) != VK_SUCCESS) {
         throw new Exception("Vulkan: Failed to create X11 window surface!");
     }
+    writeln("Vulkan: Successfully created X11 surface!");
 }
 
 }
