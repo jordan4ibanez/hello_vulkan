@@ -11,6 +11,10 @@
 			"targetType": "executable"
 		},
 		{
+			"dependencies": {
+				"x11": "~>1.0.21",
+				"xlib-d": "~>0.3.0"
+			},
 			"name": "Linux",
 			"platforms": [
 				"linux"
@@ -23,8 +27,7 @@
 		"bindbc-glfw": "~>1.0.2",
 		"delta_time": "~>1.0.5",
 		"doml": "~>1.0.1",
-		"erupted": "~>2.1.87",
-		"x11": "~>1.0.21"
+		"erupted": "~>2.1.87"
 	},
 	"description": "Watch me struggle as I attempt to open a window in vulkan.",
 	"libs-posix": [
