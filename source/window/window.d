@@ -66,6 +66,10 @@ const string[] validationLayers = [
     "VK_LAYER_KHRONOS_validation"
 ];
 
+const string[] deviceExtensions = [
+    VK_KHR_SWAPCHAIN_EXTENSION_NAME
+];
+
 // Just the initializer for the module
 void initialize() {
     if (!initializeGLFW()) {
@@ -300,13 +304,50 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
     QueueFamilyIndices indices = findQueueFamilies(device);
 
     bool hasGraphicsCommands = indices.isComplete();
-    if (hasGraphicsCommands) {
+
+    bool extensionsSupported = checkDeviceExtensionSupport(device);
+
+    bool fullSupport = hasGraphicsCommands && extensionsSupported;
+
+    if (fullSupport) {
         string gpuName = to!string(deviceProperties.deviceName);
         writeln("Vulkan: ", gpuName, " has graphics commands queue!");
         writeln("Vulkan: Selected GPU -> [ ", gpuName, " ]");
     }
 
-    return hasGraphicsCommands;
+    return fullSupport;
+}
+
+bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
+
+    // Basically, we're creating a dynamic array of all supported extensions for the current device (GPU)
+    uint extensionCount;
+    vkEnumerateDeviceExtensionProperties(device, VK_NULL_HANDLE, &extensionCount, VK_NULL_HANDLE);
+    VkExtensionProperties[] availableExtensions = new VkExtensionProperties[extensionCount];
+    vkEnumerateDeviceExtensionProperties(device, VK_NULL_HANDLE, &extensionCount, availableExtensions.ptr);
+
+    // Creating a set from deviceExtensions like the C++ example
+    AAset!string requiredExtensions;
+    foreach (string key; deviceExtensions) {
+        requiredExtensions.add(key);
+    }
+
+    /**
+    So basically, we're making sure that all the extensions that we require
+    from requiredExtensions are available in availableExtensions.
+
+    This is why it's using a set!
+    */
+    foreach (VkExtensionProperties extension; availableExtensions) {
+        string gottenExtensionName = split(to!string(extension.extensionName), "\0")[0];
+
+        writeln("Vulkan Extension: ", gottenExtensionName);
+
+        requiredExtensions.remove(gottenExtensionName);
+    }
+
+    // And if it's empty, we have everything we need!
+    return requiredExtensions.empty();
 }
 
 QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
