@@ -227,9 +227,11 @@ version(Windows) {
         // Display handle
         createInfo.dpy = glfwGetX11Display();
 
-        if (vkCreateXlibSurfaceKHR(instance, &createInfo, VK_NULL_HANDLE, &surface) != VK_SUCCESS) {
-            throw new Exception("Vulkan: Failed to create X11 window surface!");
-        }
+        writeln(createInfo);
+
+        // if (vkCreateXlibSurfaceKHR(instance, &createInfo, VK_NULL_HANDLE, &surface) != VK_SUCCESS) {
+        //     throw new Exception("Vulkan: Failed to create X11 window surface!");
+        // }
         writeln("Vulkan: Successfully created X11 surface!");
     }
 }
@@ -583,12 +585,14 @@ private bool initializeGLFWComponents() {
 version(Windows) {
 
     private void initializeAdditionalComponents() {
+        writeln("loading windows version");
         loadGLFW_Windows();
     }
 
 } else version(Posix) {
 
     private void initializeAdditionalComponents() {
+        writeln("loading linux version");
         loadGLFW_X11();
     }
 
