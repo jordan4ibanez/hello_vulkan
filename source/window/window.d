@@ -189,7 +189,23 @@ private void initializeVulkan() {
 
 //!! ---------------- END VULKAN INIT -------------------------------
 
-//!! ---------------- BEGIN SURFACE TOOLS ---------------------------
+
+//** --------------- BEGIN SWAP CHAIN SUPPORT ---------------------
+
+
+SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device) {
+    SwapChainSupportDetails details;
+
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
+
+    return details;
+}
+
+
+//!! -------------- END SWAP CHAIN SUPPORT -------------------------
+
+
+//** ---------------- BEGIN SURFACE TOOLS ---------------------------
 
 
 private void createSurface() {
