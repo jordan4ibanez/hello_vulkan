@@ -206,7 +206,7 @@ void createLogicalDevice() {
 
     float queuePriority = 1.0f;
     queueCreateInfo.pQueuePriorities = &queuePriority;
-    
+
     VkPhysicalDeviceFeatures deviceFeatures;
     VkDeviceCreateInfo createInfo;
 
@@ -274,6 +274,21 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
 
     // Check if there's a queue that supports graphics commands
     QueueFamilyIndices indices = findQueueFamilies(device);
+
+    VkDeviceQueueCreateInfo[] queueCreateInfos;
+    AAset!uint uniqueQueueFamilies;
+    uniqueQueueFamilies.add(indices.graphicsFamily.value());
+    uniqueQueueFamilies.add(indices.presentFamily.value());
+
+    float queuePriority = 1.0f;
+    for (uint32_t queueFamily : uniqueQueueFamilies) {
+        VkDeviceQueueCreateInfo queueCreateInfo{};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = queueFamily;
+        queueCreateInfo.queueCount = 1;
+        queueCreateInfo.pQueuePriorities = &queuePriority;
+        queueCreateInfos.push_back(queueCreateInfo);
+    }
 
     bool hasGraphicsCommands = indices.isComplete();
     if (hasGraphicsCommands) {
