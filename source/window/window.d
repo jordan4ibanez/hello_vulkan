@@ -305,9 +305,9 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
 
     bool hasGraphicsCommands = indices.isComplete();
 
-    bool extensionsSupported = checkDeviceExtensionSupport(device);
+    bool hasExtensionSupport = checkDeviceExtensionSupport(device);
 
-    bool fullSupport = hasGraphicsCommands && extensionsSupported;
+    bool fullSupport = hasGraphicsCommands && hasExtensionSupport;
 
     if (fullSupport) {
         string gpuName = to!string(deviceProperties.deviceName);
