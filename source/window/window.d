@@ -214,9 +214,10 @@ version(Windows) {
     void createWindowSurface() {
         // Now we're creating the window surface on X11
         VkXlibSurfaceCreateInfoKHR createInfo;
+
         createInfo.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
         // Window handle
-        createInfo.Window = glfwGetX11Window(window);
+        createInfo.window = glfwGetX11Window(window);
 
         if (vkCreateXlibSurfaceKHR(instance, &createInfo, VK_NULL_HANDLE, &surface) != VK_SUCCESS) {
             throw new Exception("Vulkan: Failed to create X11 window surface!");
