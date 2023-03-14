@@ -2,25 +2,6 @@
 	"authors": [
 		"jordan4ibanez"
 	],
-	"configurations": [
-		{
-			"name": "Windows",
-			"platforms": [
-				"windows"
-			],
-			"targetType": "executable"
-		},
-		{
-			"dependencies": {
-                "x11": "~>1.0.21"
-			},
-			"name": "Linux",
-			"platforms": [
-				"linux"
-			],
-			"targetType": "executable"
-		}
-	],
 	"copyright": "Copyright © 2023, jordan4ibanez",
 	"dependencies": {
 		"bindbc-glfw": "~>1.0.2",
