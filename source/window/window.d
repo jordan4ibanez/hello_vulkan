@@ -17,6 +17,9 @@ import erupted.types;
 import erupted.vulkan_lib_loader;
 import erupted.platform_extensions;
 
+// import loader = bindbc.loader.sharedlib;
+import bindbc.glfw;
+
 version(Windows) {
 
     import core.sys.windows.windows;
@@ -30,14 +33,9 @@ version(Windows) {
     mixin(bindGLFW_X11);
 
 }
-
 mixin(bindGLFW_Vulkan);
 
 //! End EXTREMELY important platform dependent imports
-
-// This is a special import. We only want to extract the loader from this module.
-import loader = bindbc.loader.sharedlib;
-import bindbc.glfw;
 
 private Vector3d clearColor;
 
