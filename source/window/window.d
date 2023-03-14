@@ -9,6 +9,7 @@ import doml.vector_2i;
 import doml.vector_2d;
 import doml.vector_3d;
 import delta_time;
+import aaset;
 
 //! These are EXTREMELY important platform dependent imports
 
@@ -52,6 +53,7 @@ VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 VkDevice device;
 VkQueue graphicsQueue;
 VkSurfaceKHR surface;
+VkQueue presentQueue;
 
 //! I wrote it how the C++ tutorial runs but we want this to ALWAYS check
 // debug {
@@ -204,17 +206,14 @@ void createLogicalDevice() {
 
     float queuePriority = 1.0f;
     queueCreateInfo.pQueuePriorities = &queuePriority;
-
+    
     VkPhysicalDeviceFeatures deviceFeatures;
-
     VkDeviceCreateInfo createInfo;
+
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
     createInfo.pQueueCreateInfos = &queueCreateInfo;
     createInfo.queueCreateInfoCount = 1;
-
     createInfo.pEnabledFeatures = &deviceFeatures;
-
-
     createInfo.enabledExtensionCount = 0;
 
     if (enableValidationLayers) {
