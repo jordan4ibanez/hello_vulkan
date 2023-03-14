@@ -80,6 +80,7 @@ void initialize() {
 
 //* =================================================== VULKAN TOOLS ========================================
 
+//** ------- BEGIN VULKAN STRUCTS --------------
 // Simply holds instruction queues
 private struct QueueFamilyIndices {
     Nullable!uint graphicsFamily;
@@ -90,6 +91,14 @@ private struct QueueFamilyIndices {
         return !this.graphicsFamily.isNull() && !this.presentFamily.isNull();
     }
 }
+
+struct SwapChainSupportDetails {
+    VkSurfaceCapabilitiesKHR capabilities;
+    VkSurfaceFormatKHR[] formats;
+    VkPresentModeKHR[] presentModes;
+};
+
+//!! -------------- END VULKAN STRUCTS -------
 
 //** ---------------- BEGIN VULKAN INIT --------------------------------------------
 
