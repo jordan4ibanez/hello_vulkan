@@ -96,7 +96,7 @@ struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
     VkSurfaceFormatKHR[] formats;
     VkPresentModeKHR[] presentModes;
-};
+}
 
 //!! -------------- END VULKAN STRUCTS -------
 
