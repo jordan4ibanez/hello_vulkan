@@ -194,6 +194,9 @@ private void initializeVulkan() {
 version(Windows) {
 
     void createWindowSurface() {
+
+        writeln("Vulkan: Attempting to create Win32 surface!");
+
         // Now we're creating the window surface on Windows
         VkWin32SurfaceCreateInfoKHR createInfo;
         createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
@@ -212,6 +215,9 @@ version(Windows) {
 } else version(Posix) {
 
     void createWindowSurface() {
+
+        writeln("Vulkan: Attempting to create x11 xLib surface!");
+
         // Now we're creating the window surface on X11
         VkXlibSurfaceCreateInfoKHR createInfo;
 
