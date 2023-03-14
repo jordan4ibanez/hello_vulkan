@@ -559,8 +559,23 @@ private bool initializeGLFWComponents() {
         return false;
     }
 
+    initializeAdditionalComponents();
+
     return true;
 }
+
+version(Windows) {
+private void initializeAdditionalComponents() {
+    loadGLFW_Windows();
+}
+}
+version(Linux) {
+private void initializeAdditionalComponents() {
+    loadGLFW_X11();
+}
+}
+
+
 
 
 // Window talks directly to GLFW
