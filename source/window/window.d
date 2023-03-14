@@ -28,7 +28,8 @@ version(Windows) {
 
 } else version(Posix) {
 
-    public import x11.extensions.Xrandr;
+    import X11.Xlib;
+    import x11.extensions.Xrandr;
     mixin Platform_Extensions!USE_PLATFORM_XLIB_KHR;
     mixin(bindGLFW_X11);
 
