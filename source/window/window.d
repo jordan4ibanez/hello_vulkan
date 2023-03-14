@@ -184,26 +184,25 @@ private void initializeVulkan() {
 
 //!! ---------------- END VULKAN INIT -------------------------------
 
-void createWindowSurface() {
-    // Now we're creating the window surface
-    //Todo: This needs to do Windows vs Linux check here
-    //Todo: Test this on Linux with X11 & Wayland
-
-    version(Windows) {
+version(Windows) {
+    void createWindowSurface() {
+        // Now we're creating the window surface on Windows
         VkWin32SurfaceCreateInfoKHR createInfo;
-
         createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
         createInfo.hwnd = glfwGetWin32Window(window);
-
-    } else version(Linux) {
-        VkXlibSurfaceCreateInfoKHR createInfo;
-
-        createInfo.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
-        createInfo.hwnd = glfwGetX11Window(window);
-    }
-    createInfo.hinstance = GetModuleHandle(VK_NULL_HANDLE);
+        createInfo.hinstance = GetModuleHandle(VK_NULL_HANDLE);    
+    }   
 }
 
+version(Linux) {
+    void createWindowSurface() {
+        // Now we're creating the window surface on X11
+        VkXlibSurfaceCreateInfoKHR createInfo;
+        createInfo.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
+        createInfo.hwnd = glfwGetX11Window(window);
+        createInfo.hinstance = GetModuleHandle(VK_NULL_HANDLE);
+    }
+}
 
 
 
