@@ -620,6 +620,7 @@ double getAspectRatio() {
 
 void pollEvents() {
     glfwPollEvents();
+    calculateDelta();
     // This causes an issue with low FPS getting the wrong FPS
     // Perhaps make an internal engine ticker that is created as an object or struct
     // Store it on heap, then calculate from there, specific to this
