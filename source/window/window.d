@@ -18,13 +18,17 @@ import erupted.vulkan_lib_loader;
 import erupted.platform_extensions;
 
 version(Windows) {
+
     import core.sys.windows.windows;
     mixin Platform_Extensions!USE_PLATFORM_WIN32_KHR;
     mixin(bindGLFW_Windows);
-} else version(Linux) {
+
+} else version(Posix) {
+
     public import X11.Xlib;
     mixin Platform_Extensions!USE_PLATFORM_XLIB_KHR;
     mixin(bindGLFW_X11);
+
 }
 
 mixin(bindGLFW_Vulkan);
@@ -199,7 +203,7 @@ version(Windows) {
         writeln("Vulkan: Successfully created Win32 surface!");
     }
 
-} else version(Linux) {
+} else version(Posix) {
 
     void createWindowSurface() {
         // Now we're creating the window surface on X11
@@ -567,7 +571,7 @@ version(Windows) {
         loadGLFW_Windows();
     }
 
-} else version(Linux) {
+} else version(Posix) {
 
     private void initializeAdditionalComponents() {
         loadGLFW_X11();
