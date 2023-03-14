@@ -23,12 +23,16 @@ import bindbc.glfw;
 version(Windows) {
 
     import core.sys.windows.windows;
+
     mixin Platform_Extensions!USE_PLATFORM_WIN32_KHR;
     mixin(bindGLFW_Windows);
 
 } else version(Posix) {
 
-    import X11.Xlib;
+    import x11.X;
+    import x11.Xlib;
+    import x11.extensions.Xrandr;
+
     mixin Platform_Extensions!USE_PLATFORM_XLIB_KHR;
     mixin(bindGLFW_X11);
 
