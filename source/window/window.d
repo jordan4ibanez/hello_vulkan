@@ -202,7 +202,7 @@ private void createSurface() {
 
 
 
-//** --------------- END SURFACE TOOLS --------------------------
+//!! --------------- END SURFACE TOOLS --------------------------
 
 
 
@@ -554,7 +554,9 @@ private void checkValidationLayerSupport() {
 
 //!! ------------------------- END EXTENSIONS & VALIDATION ---------------------------------
 
+
 //! =================================================== END VULKAN TOOLS ==========================================
+
 
 //* ======== GLFW Tools ========
 
@@ -645,6 +647,8 @@ private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
 
     // In the future, get array of monitor pointers with: GLFWmonitor** monitors = glfwGetMonitors(&count);
     // monitor = glfwGetPrimaryMonitor();
+
+    glfwSetKeyCallback(window, &key_callback);
   
 
     // No error :)
@@ -702,6 +706,7 @@ string getTitle() {
     return title;
 }
 
+nothrow
 void close() {
     glfwSetWindowShouldClose(window, true);
 }
@@ -709,6 +714,21 @@ void close() {
 bool isFullScreen() {
     return fullscreen;
 }
+
+
+// This is a little baby function to allow me to quickly hit escape while rapidly debugging
+nothrow static extern (C)
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_ESC) {
+        close();
+    }
+
+    // if (key == GLFW_KEY_E && action == GLFW_PRESS)
+}
+bool getKeyPressed(uint input) {
+    return true;
+}
+
 
 //! ====== End GLFW Tools ======
 
