@@ -237,10 +237,11 @@ void createLogicalDevice() {
     createInfo.pQueueCreateInfos = queueCreateInfos.ptr;
     createInfo.enabledExtensionCount = 0;
 
+    // Physical device features
     VkPhysicalDeviceFeatures deviceFeatures;
     createInfo.pEnabledFeatures = &deviceFeatures;
-    
 
+    // Now enable debugging output
     if (enableValidationLayers) {
         createInfo.enabledLayerCount = cast(uint)validationLayers.length;
         createInfo.ppEnabledLayerNames = convertToCStringArray(validationLayers);
