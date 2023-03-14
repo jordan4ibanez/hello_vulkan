@@ -581,7 +581,7 @@ private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     // Create a window on the primary monitor
-    window = glfwCreateWindow(800, 600, "Remember to replace me", null, null);
+    window = glfwCreateWindow(800, 600, "This is the window title", null, null);
 
     // Something even scarier fails to load
     if (!window || window == null) {
