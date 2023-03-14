@@ -209,7 +209,7 @@ void createLogicalDevice() {
 
     float queuePriority = 1.0f;
 
-    // Create the queue
+    // iterate the queues
     foreach (uint queueFamily; uniqueQueueFamilies) {
 
         VkDeviceQueueCreateInfo queueCreateInfo;
@@ -220,8 +220,6 @@ void createLogicalDevice() {
 
         queueCreateInfos ~= queueCreateInfo;
     }
-
-    ///!! THIS IS THE UNMODIFIED PART =====================
 
     // Create info queue
     VkDeviceQueueCreateInfo queueCreateInfo;
