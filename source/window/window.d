@@ -55,6 +55,7 @@ VkDevice device;
 VkQueue graphicsQueue;
 VkSurfaceKHR surface;
 VkQueue presentQueue;
+VkSwapchainKHR swapChain;
 
 //! I wrote it how the C++ tutorial runs but we want this to ALWAYS check
 // debug {
@@ -186,6 +187,8 @@ private void initializeVulkan() {
     pickPhysicalDevice();
     
     createLogicalDevice();
+
+    createSwapChain();
 }
 
 //!! ---------------- END VULKAN INIT -------------------------------
@@ -193,6 +196,57 @@ private void initializeVulkan() {
 
 //** --------------- BEGIN SWAP CHAIN TOOLS ---------------------
 
+
+void createSwapChain() {
+    SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice);
+
+    VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
+    VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
+    VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
+
+    uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+
+    if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
+        imageCount = swapChainSupport.capabilities.maxImageCount;
+    }
+
+    VkSwapchainCreateInfoKHR createInfo;
+    createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    createInfo.surface = surface;
+    createInfo.minImageCount = imageCount;
+    createInfo.imageFormat = surfaceFormat.format;
+    createInfo.imageColorSpace = surfaceFormat.colorSpace;
+    createInfo.imageExtent = extent;
+    createInfo.imageArrayLayers = 1;
+    createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+    QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+    uint[] queueFamilyIndices = [indices.graphicsFamily.get(), indices.presentFamily.get()];
+
+    if (indices.graphicsFamily != indices.presentFamily) {
+        createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+        createInfo.queueFamilyIndexCount = 2;
+        createInfo.pQueueFamilyIndices = queueFamilyIndices.ptr;
+    } else {
+        createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        // Optional
+        createInfo.queueFamilyIndexCount = 0;
+        // Optional
+        createInfo.pQueueFamilyIndices = VK_NULL_HANDLE;
+    }
+
+    createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
+    createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+    createInfo.presentMode = presentMode;
+    createInfo.clipped = VK_TRUE;
+    createInfo.oldSwapchain = VK_NULL_HANDLE;
+
+    if (vkCreateSwapchainKHR(device, &createInfo, VK_NULL_HANDLE, &swapChain) != VK_SUCCESS) {
+        throw new Exception("Vulkan: Failed to create swap chain!");
+    }
+
+    writeln("Vulkan: Successfully created swap chain!");
+}
 
 SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device) {
 
@@ -270,7 +324,9 @@ VkExtent2D chooseSwapExtent(VkSurfaceCapabilitiesKHR capabilities) {
     if (capabilities.currentExtent.width != uint.max) {
         return capabilities.currentExtent;
     } else {
+
         int width, height;
+
         glfwGetFramebufferSize(window, &width, &height);
 
         VkExtent2D actualExtent = {
