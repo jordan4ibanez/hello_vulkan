@@ -147,25 +147,38 @@ private void initializeVulkan() {
 //** ----------------- BEGIN GRAPHICS PIPELINE TOOLS ------------------
 
 //! This is a beautiful hack to compile shaders during runtime
-version(Windows) {
 void executeHackJobShaderCompile() {
 
-    auto hackJobVertexShader = execute(["glslc.exe", ".\\shaders\\vertex.vert", "-o", ".\\shaders\\vert.spv"]);
+    /**
+    ENFORCE having the glslc compiler onboard!
+
+    It may look weird that we're throwing an error from catching another.
+    But we must explain what to do to fix it!
+
+    Thanks for the help, rikki_cattermole!
+    */
+    try {
+        auto spirvCompilerExecutable = execute(["glslc", "--help"]);
+        if (spirvCompilerExecutable.status != 0) {
+            throw new Exception("");
+        }
+    } catch(Exception e) {
+        throw new Exception("Vulkan: FAILED to find glslc! Is glslc installed on your system? This is required to compile shaders during runtime!");
+    }
+
+    auto hackJobVertexShader = execute(["glslc", "./shaders/vertex.vert", "-o", "./shaders/vert.spv"]);
 
     if (hackJobVertexShader.status != 0) {
         writeln(hackJobVertexShader.output);
         throw new Exception("Vulkan: Vertex Shader failed to compile!");
     }
 
-    auto hackJobFragmentShader = execute(["glslc.exe", ".\\shaders\\frag.frag", "-o", ".\\shaders\\frag.spv"]);
+    auto hackJobFragmentShader = execute(["glslc", "./shaders/frag.frag", "-o", "./shaders/frag.spv"]);
 
     if (hackJobFragmentShader.status != 0) {
         writeln(hackJobFragmentShader.output);
         throw new Exception("Vulkan: Fragment Shader failed to compile!");
     }
-}
-} else version(Linux) {
-    // I have no clue
 }
 
 
