@@ -194,9 +194,32 @@ private void initializeVulkan() {
 
 
 SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device) {
+
+
     SwapChainSupportDetails details;
 
+    // Getting the supported formats
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
+    uint formatCount;
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, VK_NULL_HANDLE);
+
+    if (formatCount != 0) {
+        details.formats.length = formatCount;
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.formats.ptr);
+    }
+
+    // Getting the supported presentation modes
+    uint presentModeCount;
+    vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, VK_NULL_HANDLE);
+
+    if (presentModeCount != 0) {
+        details.presentModes.length = presentModeCount;
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.presentModes.ptr);
+    }
+
+    
+
+
 
     return details;
 }
