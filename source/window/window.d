@@ -142,11 +142,9 @@ private void initializeVulkan() {
 
 //!! ---------------- END VULKAN INIT -------------------------------
 
+//** -------------- BEGIN SHADER TOOLS -------------------------
 
 
-//** ----------------- BEGIN GRAPHICS PIPELINE TOOLS ------------------
-
-//! This is a beautiful hack to compile shaders during runtime
 void executeHackJobShaderCompile() {
 
     /**
@@ -181,6 +179,14 @@ void executeHackJobShaderCompile() {
     }
 }
 
+
+
+//!! --------------- END SHADER TOOLS ----------------------------
+
+
+//** ----------------- BEGIN GRAPHICS PIPELINE TOOLS ------------------
+
+//! This is a beautiful hack to compile shaders during runtime
 
 void createGraphicsPipeline() {
 
