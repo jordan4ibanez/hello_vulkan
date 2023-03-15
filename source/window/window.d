@@ -782,6 +782,9 @@ void createVulkanInstance() {
 //* ======== GLFW Tools ========
 
 void destroy() {
+    foreach (VkImageView imageView; swapChainImageViews) {
+        vkDestroyImageView(device, imageView, VK_NULL_HANDLE);
+    }
     vkDestroySwapchainKHR(device, swapChain, VK_NULL_HANDLE);
     if (enableValidationLayers) {
         destroyDebugUtilsMessengerEXT(instance, debugMessenger, VK_NULL_HANDLE);
