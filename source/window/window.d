@@ -133,17 +133,33 @@ private void initializeVulkan() {
     createSwapChain();
 
     createImageViews();
+
+    createGraphicsPipeline();
 }
 
 //!! ---------------- END VULKAN INIT -------------------------------
+
+
+
+//** ----------------- BEGIN GRAPHICS PIPELINE TOOLS ------------------
+
+
+void createGraphicsPipeline() {
+
+}
+
+
+
+
+//!! ---------------- END GRAPHICS PIPELINE TOOLS -------------------
+
+
 
 //** ----------------- BEGIN IMAGE VIEWS TOOLS -----------------
 
 void createImageViews() {
 
     swapChainImageViews.length = swapChainImages.length;
-
-
 
     for (size_t i = 0; i < swapChainImages.length; i++) {
         VkImageViewCreateInfo createInfo;
