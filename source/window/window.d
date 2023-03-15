@@ -200,7 +200,7 @@ SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device) {
 
     // Getting the supported formats
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
-    uint formatCount;
+    uint formatCount = 0;
     vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, VK_NULL_HANDLE);
 
     if (formatCount != 0) {
@@ -209,7 +209,7 @@ SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device) {
     }
 
     // Getting the supported presentation modes
-    uint presentModeCount;
+    uint presentModeCount = 0;
     vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, VK_NULL_HANDLE);
 
     if (presentModeCount != 0) {
@@ -217,7 +217,7 @@ SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device) {
         vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.presentModes.ptr);
     }
 
-    
+
 
 
 
@@ -357,7 +357,14 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
 
     bool hasExtensionSupport = checkDeviceExtensionSupport(device);
 
-    bool fullSupport = hasGraphicsCommands && hasExtensionSupport;
+    bool swapChainAdequate = false;
+
+    if (hasExtensionSupport) {
+        SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
+        swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
+    }
+
+    bool fullSupport = hasGraphicsCommands && hasExtensionSupport && swapChainAdequate;
 
     if (fullSupport) {
         string gpuName = to!string(deviceProperties.deviceName);
