@@ -237,11 +237,23 @@ VkPresentModeKHR chooseSwapPresentMode(const VkPresentModeKHR[] availablePresent
     Here is what these modes mean:
 
     VK_PRESENT_MODE_IMMEDIATE_KHR    = vsync 0
+
     VK_PRESENT_MODE_FIFO_KHR         = vsync 1
+
+    This one is probably the best for pc games
     VK_PRESENT_MODE_FIFO_RELAXED_KHR = Basically, decoupled vsync 0, don't wait
+
     VK_PRESENT_MODE_MAILBOX_KHR      = vsync 3 - Triple buffered
     */
 
+    // Basically going to try to grab the decoupled mode so it's super nice
+    foreach (VkPresentModeKHR availablePresentMode; availablePresentModes) {
+        if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
+            return availablePresentMode;
+        }
+    }
+
+    // Defaulting to regular vsync mode
     return VK_PRESENT_MODE_FIFO_KHR;
 }
 
