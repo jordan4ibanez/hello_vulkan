@@ -235,6 +235,12 @@ void createGraphicsPipeline() {
     
     vkDestroyShaderModule(device, fragShaderModule, VK_NULL_HANDLE);
     vkDestroyShaderModule(device, vertShaderModule, VK_NULL_HANDLE);
+
+    VkDynamicState[] dynamicStates = [
+        VK_DYNAMIC_STATE_VIEWPORT,
+        VK_DYNAMIC_STATE_SCISSOR
+    ];
+
 }
 
 
