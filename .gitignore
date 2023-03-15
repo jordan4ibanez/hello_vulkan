@@ -9,7 +9,7 @@ hello_vulkan.dll
 hello_vulkan.a
 hello_vulkan.lib
 hello_vulkan-test-*
-*.exe
+hello_vulkan.exe
 *.pdb
 *.o
 *.obj
