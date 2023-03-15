@@ -115,66 +115,8 @@ private void initializeVulkan() {
         throw new Exception("Vulkan: Failed to load Erupted global level functions!");
     }
 
-    // App information
-    VkApplicationInfo appInfo;
-    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    appInfo.pApplicationName = "Hello dere";
-    appInfo.applicationVersion = VK_MAKE_API_VERSION(0, 1, 0, 0);
-    appInfo.pEngineName = "No Engine";
-    appInfo.engineVersion = VK_MAKE_API_VERSION(0, 1, 0, 0);
-    appInfo.apiVersion = VK_API_VERSION_1_0;
-
-    // Instance creation info
-    VkInstanceCreateInfo createInfo;
-    createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    createInfo.pApplicationInfo = &appInfo;
-
-    // Get all extensions
-    string[] extensions = getRequiredExtensions();
-
-    createInfo.enabledExtensionCount = cast(int)extensions.length;
-    createInfo.ppEnabledExtensionNames = convertToCStringArray(extensions);
-
-    checkValidationLayerSupport();
-
-    // Now make those validation layers available, or don't
-    // Add in debug info as well
-    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-    if (enableValidationLayers) {
-        createInfo.enabledLayerCount = cast(uint)validationLayers.length;
-        createInfo.ppEnabledLayerNames = convertToCStringArray(validationLayers);
-
-        populateDebugMessengerCreateInfo(debugCreateInfo);
-        createInfo.pNext = cast(VkDebugUtilsMessengerCreateInfoEXT*) &debugCreateInfo;
-    } else {
-        createInfo.enabledLayerCount = 0;
-        createInfo.pNext = VK_NULL_HANDLE;
-    }
-
-    // Make an instance of Vulkan in program
-    if (vkCreateInstance(&createInfo, VK_NULL_HANDLE, &instance) != VK_SUCCESS) {
-        throw new Exception("Vulkan: Failed to create instance!");
-    }
-
-    // We can now load up instance level functions
-    loadInstanceLevelFunctions(instance);
-
-    // Check for extension support
-    uint extensionCount = 0;
-    vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, VK_NULL_HANDLE);
-
-    VkExtensionProperties[] vulkanExtensions = new VkExtensionProperties[extensionCount];
-    vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, cast(VkExtensionProperties*)vulkanExtensions.ptr);
-
-    // Output available extensions into the terminal
-    if (excessiveDebug) {
-        writeln("==================================\n" ~
-                "VULKAN AVAILABLE EXTENSIONS:\n" ~
-                "==================================");
-        foreach (VkExtensionProperties thisExtension; vulkanExtensions) {
-            writeln(split(to!string(thisExtension.extensionName), "\0")[0]);
-        }
-    }
+    // Create the Vulkan instance
+    createVulkanInstance();
 
     setupDebugMessenger();
 
@@ -722,6 +664,77 @@ private void checkValidationLayerSupport() {
 }
 
 //!! ------------------------- END EXTENSIONS & VALIDATION ---------------------------------
+
+//** ----------------------- BEGIN INSTANCE TOOLS ------------------------------------
+
+
+void createVulkanInstance() {
+    // App information
+    VkApplicationInfo appInfo;
+    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    appInfo.pApplicationName = "Hello dere";
+    appInfo.applicationVersion = VK_MAKE_API_VERSION(0, 1, 0, 0);
+    appInfo.pEngineName = "No Engine";
+    appInfo.engineVersion = VK_MAKE_API_VERSION(0, 1, 0, 0);
+    appInfo.apiVersion = VK_API_VERSION_1_0;
+
+    // Instance creation info
+    VkInstanceCreateInfo createInfo;
+    createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    createInfo.pApplicationInfo = &appInfo;
+
+    // Get all extensions
+    string[] extensions = getRequiredExtensions();
+
+    createInfo.enabledExtensionCount = cast(int)extensions.length;
+    createInfo.ppEnabledExtensionNames = convertToCStringArray(extensions);
+
+    checkValidationLayerSupport();
+
+    // Now make those validation layers available, or don't
+    // Add in debug info as well
+    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
+    if (enableValidationLayers) {
+        createInfo.enabledLayerCount = cast(uint)validationLayers.length;
+        createInfo.ppEnabledLayerNames = convertToCStringArray(validationLayers);
+
+        populateDebugMessengerCreateInfo(debugCreateInfo);
+        createInfo.pNext = cast(VkDebugUtilsMessengerCreateInfoEXT*) &debugCreateInfo;
+    } else {
+        createInfo.enabledLayerCount = 0;
+        createInfo.pNext = VK_NULL_HANDLE;
+    }
+
+    // Make an instance of Vulkan in program
+    if (vkCreateInstance(&createInfo, VK_NULL_HANDLE, &instance) != VK_SUCCESS) {
+        throw new Exception("Vulkan: Failed to create instance!");
+    }
+
+    // We can now load up instance level functions
+    loadInstanceLevelFunctions(instance);
+
+    // Check for extension support
+    uint extensionCount = 0;
+    vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, VK_NULL_HANDLE);
+
+    VkExtensionProperties[] vulkanExtensions = new VkExtensionProperties[extensionCount];
+    vkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &extensionCount, cast(VkExtensionProperties*)vulkanExtensions.ptr);
+
+    // Output available extensions into the terminal
+    if (excessiveDebug) {
+        writeln("==================================\n" ~
+                "VULKAN AVAILABLE EXTENSIONS:\n" ~
+                "==================================");
+        foreach (VkExtensionProperties thisExtension; vulkanExtensions) {
+            writeln(split(to!string(thisExtension.extensionName), "\0")[0]);
+        }
+    }
+}
+
+
+
+
+//!! ---------------------- END INSTANCE TOOLS --------------------------------------
 
 
 //! =================================================== END VULKAN TOOLS ==========================================
