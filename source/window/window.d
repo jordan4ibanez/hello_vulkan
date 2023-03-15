@@ -10,6 +10,7 @@ import doml.vector_2d;
 import doml.vector_3d;
 import delta_time;
 import aaset;
+import std.algorithm.comparison: clamp;
 
 //! These are EXTREMELY important platform dependent imports
 
@@ -257,6 +258,33 @@ VkPresentModeKHR chooseSwapPresentMode(const VkPresentModeKHR[] availablePresent
     return VK_PRESENT_MODE_FIFO_KHR;
 }
 
+VkExtent2D chooseSwapExtent(VkSurfaceCapabilitiesKHR capabilities) {
+
+    /**
+    This is the resolution of swap chain images.
+
+    It is almost always equal to the resolution of the window that we're drawing
+    to in pixels.
+    */
+
+    if (capabilities.currentExtent.width != uint.max) {
+        return capabilities.currentExtent;
+    } else {
+        int width, height;
+        glfwGetFramebufferSize(window, &width, &height);
+
+        VkExtent2D actualExtent = {
+            width,
+            height
+        };
+
+        actualExtent.width  = clamp(actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
+        actualExtent.height = clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
+
+        return actualExtent;
+    }
+
+}
 
 //!! -------------- END SWAP CHAIN TOOLS -------------------------
 
