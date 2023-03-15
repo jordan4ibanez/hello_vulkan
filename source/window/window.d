@@ -57,6 +57,7 @@ VkSwapchainKHR swapChain;
 VkImage[] swapChainImages;
 VkFormat swapChainImageFormat;
 VkExtent2D swapChainExtent;
+VkImageView[] swapChainImageViews;
 
 // For Vulkan debugging
 private bool enableValidationLayers  = true;
@@ -130,9 +131,47 @@ private void initializeVulkan() {
     createLogicalDevice();
 
     createSwapChain();
+
+    createImageViews();
 }
 
 //!! ---------------- END VULKAN INIT -------------------------------
+
+//** ----------------- BEGIN IMAGE VIEWS TOOLS -----------------
+
+void createImageViews() {
+
+    swapChainImageViews.length = swapChainImages.length;
+
+
+
+    for (size_t i = 0; i < swapChainImages.length; i++) {
+        VkImageViewCreateInfo createInfo;
+        createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        createInfo.image = swapChainImages[i];
+        createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        createInfo.format = swapChainImageFormat;
+        createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        createInfo.subresourceRange.baseMipLevel = 0;
+        createInfo.subresourceRange.levelCount = 1;
+        createInfo.subresourceRange.baseArrayLayer = 0;
+        createInfo.subresourceRange.layerCount = 1;
+
+        if (vkCreateImageView(device, &createInfo, VK_NULL_HANDLE, &swapChainImageViews[i]) != VK_SUCCESS) {
+            throw new Exception("Vulkan: Failed to create image views!");
+        }
+    }
+
+    writeln("Vulkan: Successfully created image views!");
+}
+
+
+//!! -------------- END IMAGE VIEWS TOOLS ----------------------
+
 
 
 //** --------------- BEGIN SWAP CHAIN TOOLS ---------------------
