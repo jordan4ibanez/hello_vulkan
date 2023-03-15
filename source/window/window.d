@@ -11,6 +11,7 @@ import doml.vector_3d;
 import delta_time;
 import aaset;
 import std.algorithm.comparison: clamp;
+import std.process: execute;
 
 //! These are EXTREMELY important platform dependent imports
 
@@ -135,6 +136,8 @@ private void initializeVulkan() {
     createImageViews();
 
     createGraphicsPipeline();
+
+    executeHackJobShaderCompile();
 }
 
 //!! ---------------- END VULKAN INIT -------------------------------
@@ -142,6 +145,28 @@ private void initializeVulkan() {
 
 
 //** ----------------- BEGIN GRAPHICS PIPELINE TOOLS ------------------
+
+//! This is a beautiful hack to compile shaders during runtime
+version(Windows) {
+void executeHackJobShaderCompile() {
+
+    auto hackJobVertexShader = execute(["glslc.exe", ".\\shaders\\vertex.vert", "-o", ".\\shaders\\vert.spv"]);
+
+    if (hackJobVertexShader.status != 0) {
+        writeln(hackJobVertexShader.output);
+        throw new Exception("Vulkan: Vertex Shader failed to compile!");
+    }
+
+    auto hackJobFragmentShader = execute(["glslc.exe", ".\\shaders\\frag.frag", "-o", ".\\shaders\\frag.spv"]);
+
+    if (hackJobFragmentShader.status != 0) {
+        writeln(hackJobFragmentShader.output);
+        throw new Exception("Vulkan: Fragment Shader failed to compile!");
+    }
+}
+} else version(Linux) {
+    // I have no clue
+}
 
 
 void createGraphicsPipeline() {
