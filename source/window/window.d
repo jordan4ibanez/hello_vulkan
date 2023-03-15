@@ -232,8 +232,7 @@ void createGraphicsPipeline() {
     fragShaderStageInfo.pName = "main";
 
     VkPipelineShaderStageCreateInfo[] shaderStages = [vertShaderStageInfo, fragShaderStageInfo];
-
-    // All of the remaining code in this chapter will be inserted before this line
+    
     vkDestroyShaderModule(device, fragShaderModule, VK_NULL_HANDLE);
     vkDestroyShaderModule(device, vertShaderModule, VK_NULL_HANDLE);
 }
