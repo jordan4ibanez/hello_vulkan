@@ -135,9 +135,10 @@ private void initializeVulkan() {
 
     createImageViews();
 
-    createGraphicsPipeline();
-
+    // This literally just runs an executable to turn glsl into spir-v
     executeHackJobShaderCompile();
+
+    createGraphicsPipeline();
 }
 
 //!! ---------------- END VULKAN INIT -------------------------------
@@ -199,6 +200,8 @@ char[] readFile(string fileLocation) {
 //! This is a beautiful hack to compile shaders during runtime
 
 void createGraphicsPipeline() {
+    auto vertShaderCode = readFile("shaders/vert.spv");
+    auto fragShaderCode = readFile("shaders/frag.spv");
 
 }
 
