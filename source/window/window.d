@@ -55,6 +55,8 @@ VkSurfaceKHR surface;
 VkQueue presentQueue;
 VkSwapchainKHR swapChain;
 VkImage[] swapChainImages;
+VkFormat swapChainImageFormat;
+VkExtent2D swapChainExtent;
 
 // For Vulkan debugging
 private bool enableValidationLayers  = true;
@@ -245,6 +247,9 @@ void createSwapChain() {
     vkGetSwapchainImagesKHR(device, swapChain, &imageCount, VK_NULL_HANDLE);
     swapChainImages.length = imageCount;
     vkGetSwapchainImagesKHR(device, swapChain, &imageCount, swapChainImages.ptr);
+    
+    swapChainImageFormat = surfaceFormat.format;
+    swapChainExtent = extent;
 
     writeln("Vulkan: Successfully created swap chain!");
 }
