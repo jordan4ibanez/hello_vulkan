@@ -221,6 +221,8 @@ SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device) {
 }
 
 VkSurfaceFormatKHR chooseSwapSurfaceFormat(VkSurfaceFormatKHR[] availableFormats) {
+
+    // We're choosing 32 bit pixel color SRGB (8 bit R,G,B,A)
     foreach (VkSurfaceFormatKHR availableFormat; availableFormats) {
         if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
             return availableFormat;
