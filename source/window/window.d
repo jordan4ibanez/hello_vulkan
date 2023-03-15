@@ -724,6 +724,7 @@ private void checkValidationLayerSupport() {
 //* ======== GLFW Tools ========
 
 void destroy() {
+    vkDestroySwapchainKHR(device, swapChain, VK_NULL_HANDLE);
     if (enableValidationLayers) {
         destroyDebugUtilsMessengerEXT(instance, debugMessenger, VK_NULL_HANDLE);
         writeln("Vulkan: Destroyed debugger!");
