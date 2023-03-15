@@ -190,7 +190,7 @@ private void initializeVulkan() {
 //!! ---------------- END VULKAN INIT -------------------------------
 
 
-//** --------------- BEGIN SWAP CHAIN SUPPORT ---------------------
+//** --------------- BEGIN SWAP CHAIN TOOLS ---------------------
 
 
 SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device) {
@@ -217,15 +217,34 @@ SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device) {
         vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.presentModes.ptr);
     }
 
-
-
-
-
     return details;
 }
 
+VkSurfaceFormatKHR chooseSwapSurfaceFormat(VkSurfaceFormatKHR[] availableFormats) {
+    foreach (VkSurfaceFormatKHR availableFormat; availableFormats) {
+        if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+            return availableFormat;
+        }
+    }
 
-//!! -------------- END SWAP CHAIN SUPPORT -------------------------
+    return availableFormats[0];
+}
+
+VkPresentModeKHR chooseSwapPresentMode(const VkPresentModeKHR[] availablePresentModes) {
+    /**
+    Here is what these modes mean:
+
+    VK_PRESENT_MODE_IMMEDIATE_KHR    = vsync 0
+    VK_PRESENT_MODE_FIFO_KHR         = vsync 1
+    VK_PRESENT_MODE_FIFO_RELAXED_KHR = Basically, decoupled vsync 0, don't wait
+    VK_PRESENT_MODE_MAILBOX_KHR      = vsync 3 - Triple buffered
+    */
+
+    return VK_PRESENT_MODE_FIFO_KHR;
+}
+
+
+//!! -------------- END SWAP CHAIN TOOLS -------------------------
 
 
 //** ---------------- BEGIN SURFACE TOOLS ---------------------------
