@@ -5,15 +5,16 @@ import std.conv;
 import std.string;
 import std.array;
 import std.typecons;
+import std.algorithm.comparison: clamp;
+import std.process: execute;
+import std.file;
+
 import doml.vector_2i;
 import doml.vector_2d;
 import doml.vector_3d;
+
 import delta_time;
 import aaset;
-import std.algorithm.comparison: clamp;
-import std.process: execute;
-
-//! These are EXTREMELY important platform dependent imports
 
 import erupted;
 import erupted.types;
@@ -25,7 +26,6 @@ import bindbc.glfw;
 
 mixin(bindGLFW_Vulkan);
 
-//! End EXTREMELY important platform dependent imports
 
 private Vector3d clearColor;
 
