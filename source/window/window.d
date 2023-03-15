@@ -711,11 +711,20 @@ void createVulkanInstance() {
     // App information
     VkApplicationInfo appInfo;
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    appInfo.pApplicationName = "Hello dere";
-    appInfo.applicationVersion = VK_MAKE_API_VERSION(0, 1, 0, 0);
+    appInfo.pApplicationName = "Hello Vulkan";
     appInfo.pEngineName = "No Engine";
-    appInfo.engineVersion = VK_MAKE_API_VERSION(0, 1, 0, 0);
-    appInfo.apiVersion = VK_API_VERSION_1_0;
+
+    appInfo.applicationVersion = VK_MAKE_API_VERSION(0, 1, 0, 0);
+    appInfo.engineVersion      = VK_MAKE_API_VERSION(0, 1, 0, 0);
+    
+    /**
+    This will throw errors if you replace this with:
+
+    VK_API_VERSION_1_0 OR VK_MAKE_API_VERSION( 0, 1, 0, 0 )
+
+    I do not think 1_0 is importing all required things for some reason
+    */
+    appInfo.apiVersion         = VK_MAKE_API_VERSION(0, 1, 1, 0);
 
     // Instance creation info
     VkInstanceCreateInfo createInfo;
