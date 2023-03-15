@@ -46,8 +46,6 @@ private int FPS = 0;
 
 // Vulkan fields
 
-bool excessiveDebug = false;
-//! This field is important, automates including vulkan glfw code into module scope
 private VkInstance instance;
 VkDebugUtilsMessengerEXT debugMessenger;
 VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -56,13 +54,12 @@ VkQueue graphicsQueue;
 VkSurfaceKHR surface;
 VkQueue presentQueue;
 VkSwapchainKHR swapChain;
+VkImage[] swapChainImages;
 
-//! I wrote it how the C++ tutorial runs but we want this to ALWAYS check
-// debug {
-    private bool enableValidationLayers  = true;
-// } else {
-    // private bool enableValidationLayers  = false;
-// }
+// For Vulkan debugging
+private bool enableValidationLayers  = true;
+// For EXCESSIVE debugging
+bool excessiveDebug = false;
 
 const string[] validationLayers = [
     "VK_LAYER_KHRONOS_validation"
@@ -244,6 +241,10 @@ void createSwapChain() {
     if (vkCreateSwapchainKHR(device, &createInfo, VK_NULL_HANDLE, &swapChain) != VK_SUCCESS) {
         throw new Exception("Vulkan: Failed to create swap chain!");
     }
+
+    vkGetSwapchainImagesKHR(device, swapChain, &imageCount, VK_NULL_HANDLE);
+    swapChainImages.length = imageCount;
+    vkGetSwapchainImagesKHR(device, swapChain, &imageCount, swapChainImages.ptr);
 
     writeln("Vulkan: Successfully created swap chain!");
 }
