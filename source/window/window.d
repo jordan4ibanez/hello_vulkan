@@ -62,6 +62,7 @@ VkImageView[] swapChainImageViews;
 VkRenderPass renderPass;
 VkPipelineLayout pipelineLayout;
 VkPipeline graphicsPipeline;
+VkFramebuffer[] swapChainFramebuffers;
 
 // For Vulkan debugging
 private bool enableValidationLayers  = true;
@@ -144,9 +145,43 @@ private void initializeVulkan() {
     executeHackJobShaderCompile();
 
     createGraphicsPipeline();
+
+    createFramebuffers();
 }
 
 //!! ---------------- END VULKAN INIT -------------------------------
+
+//** ----------------- BEGIN FRAMEBUFFER TOOLS --------------------
+
+
+void createFramebuffers() {
+
+    swapChainFramebuffers.length = swapChainImageViews.length;
+
+    for (size_t i = 0; i < swapChainImageViews.length; i++) {
+        VkImageView[] attachments = [
+            swapChainImageViews[i]
+        ];
+
+        VkFramebufferCreateInfo framebufferInfo;
+        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebufferInfo.renderPass = renderPass;
+        framebufferInfo.attachmentCount = 1;
+        framebufferInfo.pAttachments = attachments.ptr;
+        framebufferInfo.width = swapChainExtent.width;
+        framebufferInfo.height = swapChainExtent.height;
+        framebufferInfo.layers = 1;
+
+        if (vkCreateFramebuffer(device, &framebufferInfo, VK_NULL_HANDLE, &swapChainFramebuffers[i]) != VK_SUCCESS) {
+            throw new Exception("Vulkan: Failed to create framebuffer!");
+        }
+    }
+    writeln("Vulkan: Successfully created framebuffers!");
+
+}
+
+
+//!! ----------------- END FRAMEBUFFER TOOLS -----------------------
 
 //** ---------------------  BEGIN RENDER PASS TOOLS ---------------------
 
