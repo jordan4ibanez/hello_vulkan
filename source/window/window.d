@@ -59,6 +59,7 @@ VkImage[] swapChainImages;
 VkFormat swapChainImageFormat;
 VkExtent2D swapChainExtent;
 VkImageView[] swapChainImageViews;
+VkRenderPass renderPass;
 VkPipelineLayout pipelineLayout;
 
 // For Vulkan debugging
@@ -136,6 +137,8 @@ private void initializeVulkan() {
 
     createImageViews();
 
+    createRenderPass();
+
     // This literally just runs an executable to turn glsl into spir-v
     executeHackJobShaderCompile();
 
@@ -143,6 +146,97 @@ private void initializeVulkan() {
 }
 
 //!! ---------------- END VULKAN INIT -------------------------------
+
+//** ---------------------  BEGIN RENDER PASS TOOLS ---------------------
+
+void createRenderPass() {
+
+    // Create color attachment
+
+    VkAttachmentDescription colorAttachment;
+    colorAttachment.format = swapChainImageFormat;
+    colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+
+    /**
+
+    Notes for loadOp:
+
+    VK_ATTACHMENT_LOAD_OP_LOAD: Preserve the existing contents of the attachment
+    VK_ATTACHMENT_LOAD_OP_CLEAR: Clear the values to a constant at the start
+    VK_ATTACHMENT_LOAD_OP_DONT_CARE: Existing contents are undefined; we don't care about them
+
+    Notes for storeOp:
+
+    VK_ATTACHMENT_STORE_OP_STORE: Rendered contents will be stored in memory and can be read later
+    VK_ATTACHMENT_STORE_OP_DONT_CARE: Contents of the framebuffer will be undefined after the rendering operation
+
+    */
+
+    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+
+    colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+
+    /**
+
+    Notes for finalLayout:
+
+    VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL: Images used as color attachment
+    VK_IMAGE_LAYOUT_PRESENT_SRC_KHR: Images to be presented in the swap chain
+    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL: Images to be used as destination for a memory copy operation
+
+    */
+    colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+
+    // Createattachment references
+
+    VkAttachmentReference colorAttachmentRef;
+    colorAttachmentRef.attachment = 0;
+    colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+    // Create subpass
+
+    /**
+
+    Notes for subpass:
+
+    pInputAttachments: Attachments that are read from a shader
+    pResolveAttachments: Attachments used for multisampling color attachments
+    pDepthStencilAttachment: Attachment for depth and stencil data
+    pPreserveAttachments: Attachments that are not used by this subpass, but for which the data must be preserved
+
+    */
+
+    VkSubpassDescription subpass;
+    subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    // The index of the attachment in this array is directly referenced from the fragment shader with the layout(location = 0) out vec4 outColor directive!
+    subpass.colorAttachmentCount = 1;
+    subpass.pColorAttachments = &colorAttachmentRef;
+
+    // Now finally create the render pass
+
+    VkRenderPassCreateInfo renderPassInfo;
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    renderPassInfo.attachmentCount = 1;
+    renderPassInfo.pAttachments = &colorAttachment;
+    renderPassInfo.subpassCount = 1;
+    renderPassInfo.pSubpasses = &subpass;
+
+    if (vkCreateRenderPass(device, &renderPassInfo, VK_NULL_HANDLE, &renderPass) != VK_SUCCESS) {
+        throw new Exception("Vulkan: Failed to create render pass!");
+    }
+
+    writeln("Vulkan: Successfully created render pass!");
+
+
+}
+
+
+
+//!! --------------------- END RENDER PASS TOOLS -------------------------
 
 //** -------------- BEGIN SHADER TOOLS -------------------------
 
@@ -383,6 +477,8 @@ void createGraphicsPipeline() {
     if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, VK_NULL_HANDLE, &pipelineLayout) != VK_SUCCESS) {
         throw new Exception("Vulkan: Failed to create pipeline layout!");
     }
+
+    writeln("Vulkan: Successfully created pipeline layout!");
 
 }
 
