@@ -1256,6 +1256,8 @@ void createVulkanInstance() {
 
 void destroy() {
 
+    vkDestroyCommandPool(device, commandPool, VK_NULL_HANDLE);
+
     foreach (VkFramebuffer framebuffer; swapChainFramebuffers) {
         vkDestroyFramebuffer(device, framebuffer, VK_NULL_HANDLE);
     }
