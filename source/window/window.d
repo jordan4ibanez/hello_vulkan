@@ -59,6 +59,7 @@ VkImage[] swapChainImages;
 VkFormat swapChainImageFormat;
 VkExtent2D swapChainExtent;
 VkImageView[] swapChainImageViews;
+VkPipelineLayout pipelineLayout;
 
 // For Vulkan debugging
 private bool enableValidationLayers  = true;
@@ -370,12 +371,19 @@ void createGraphicsPipeline() {
     colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO; // Optional
     colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD; // Optional
 
-    
+    // Now we have the actual pipeline layout, create it
 
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo;
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 0; // Optional
+    pipelineLayoutInfo.pSetLayouts = VK_NULL_HANDLE; // Optional
+    pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
+    pipelineLayoutInfo.pPushConstantRanges = VK_NULL_HANDLE; // Optional
 
+    if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, VK_NULL_HANDLE, &pipelineLayout) != VK_SUCCESS) {
+        throw new Exception("Vulkan: Failed to create pipeline layout!");
+    }
 
-
-    
 }
 
 
@@ -1037,6 +1045,9 @@ void createVulkanInstance() {
 //* ======== GLFW Tools ========
 
 void destroy() {
+
+    vkDestroyPipelineLayout(device, pipelineLayout, VK_NULL_HANDLE);
+
     foreach (VkImageView imageView; swapChainImageViews) {
         vkDestroyImageView(device, imageView, VK_NULL_HANDLE);
     }
