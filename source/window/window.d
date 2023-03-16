@@ -151,11 +151,40 @@ private void initializeVulkan() {
     createFramebuffers();
 
     createCommandPool();
+
+    createCommandBuffer();
 }
 
 //!! ---------------- END VULKAN INIT -------------------------------
 
 //** ---------------- BEGIN COMMAND TOOLS -----------------------
+
+
+void createCommandBuffer() {
+
+    /**
+    
+    Notes for the level parameter:
+
+    VK_COMMAND_BUFFER_LEVEL_PRIMARY: Can be submitted to a queue for execution, but cannot be called from other command buffers.
+    VK_COMMAND_BUFFER_LEVEL_SECONDARY: Cannot be submitted directly, but can be called from primary command buffers.
+
+    */
+
+    VkCommandBufferAllocateInfo allocInfo;
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.commandPool = commandPool;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = 1;
+
+    if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS) {
+        throw new Exception("Vulkan: Failed to allocate command buffers!");
+    }
+
+    writeln("Vulkan: Successfully allocated command buffers!");
+
+}
+
 
 void createCommandPool() {
 
