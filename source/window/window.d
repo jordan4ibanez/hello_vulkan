@@ -241,8 +241,6 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
     }
 
     writeln("Successfully recorded command buffer!");
-    
-
 
 }
 
