@@ -121,7 +121,7 @@ void initialize() {
     createRenderPass();
 
     // This literally just runs an executable to turn glsl into spir-v
-    // executeHackJobShaderCompile();
+    executeHackJobShaderCompile();
 
     createGraphicsPipeline();
 
@@ -322,7 +322,7 @@ private void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIn
         throw new Exception("Vulkan: Failed to record command buffer!");
     }
 
-    writeln("Successfully recorded command buffer!");
+    // writeln("Successfully recorded command buffer!");
 
 }
 
