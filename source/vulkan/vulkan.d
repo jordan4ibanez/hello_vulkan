@@ -175,11 +175,9 @@ void drawFrame() {
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores.ptr;
 
-    if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS) {
+    if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFence) != VK_SUCCESS) {
         throw new Exception("Vulkan: Failed to submit draw command buffer!");
     }
-
-    if (f) return;
 
     VkSubpassDependency dependency;
     dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
@@ -1073,6 +1071,8 @@ private void createLogicalDevice() {
     }
     
     vkGetDeviceQueue(device, indices.presentFamily.get(), 0, &presentQueue);
+
+    vkGetDeviceQueue(device, indices.graphicsFamily.get(), 0, &graphicsQueue);
 }
 
 
