@@ -1222,6 +1222,10 @@ void createVulkanInstance() {
 
 void destroy() {
 
+    foreach (VkFramebuffer framebuffer; swapChainFramebuffers) {
+        vkDestroyFramebuffer(device, framebuffer, VK_NULL_HANDLE);
+    }
+
     vkDestroyPipeline(device, graphicsPipeline, VK_NULL_HANDLE);
     vkDestroyPipelineLayout(device, pipelineLayout, VK_NULL_HANDLE);
     vkDestroyRenderPass(device, renderPass, VK_NULL_HANDLE);
