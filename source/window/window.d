@@ -65,6 +65,10 @@ VkPipeline graphicsPipeline;
 VkFramebuffer[] swapChainFramebuffers;
 VkCommandPool commandPool;
 VkCommandBuffer commandBuffer;
+//! Note: Semaphore is a fancy word for signal aka a flag
+VkSemaphore imageAvailableSemaphore;
+VkSemaphore renderFinishedSemaphore;
+VkFence inFlightFence;
 
 // For Vulkan debugging
 private bool enableValidationLayers  = true;
@@ -153,9 +157,33 @@ private void initializeVulkan() {
     createCommandPool();
 
     createCommandBuffer();
+
+    createSyncObjects();
 }
 
 //!! ---------------- END VULKAN INIT -------------------------------
+
+//** ---------------- BEGIN SYNC TOOLS --------------------------
+
+void createSyncObjects() {
+    VkSemaphoreCreateInfo semaphoreInfo;
+    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+    VkFenceCreateInfo fenceInfo;
+    fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+
+    if (vkCreateSemaphore(device, &semaphoreInfo, VK_NULL_HANDLE, &imageAvailableSemaphore) != VK_SUCCESS ||
+        vkCreateSemaphore(device, &semaphoreInfo, VK_NULL_HANDLE, &renderFinishedSemaphore) != VK_SUCCESS ||
+        vkCreateFence(device, &fenceInfo, VK_NULL_HANDLE, &inFlightFence) != VK_SUCCESS) {
+        throw new Exception("Vulkan: Failed to create semaphores!");
+    }
+
+    writeln("Vulkan: Successfully created semaphores!");
+
+}
+
+
+//!! ------------------ END SYNC TOOLS --------------------------
 
 //** ---------------- BEGIN COMMAND TOOLS -----------------------
 
