@@ -241,6 +241,11 @@ void createGraphicsPipeline() {
         VK_DYNAMIC_STATE_SCISSOR
     ];
 
+    VkPipelineDynamicStateCreateInfo dynamicState;
+    dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicState.dynamicStateCount = cast(uint)dynamicStates.length;
+    dynamicState.pDynamicStates = dynamicStates.ptr;
+
 }
 
 
