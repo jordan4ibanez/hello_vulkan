@@ -9,12 +9,8 @@ void main() {
 
     while (!window.shouldClose()) {
         window.pollEvents();
-        drawFrame();
+        window.drawFrame();
     }
     
     window.destroy();
-}
-
-void drawFrame() {
-
 }

@@ -135,11 +135,14 @@ private void initializeVulkan() {
     createSurface();
 
     // Now load up calls from Erupted into memory
+
     loadDeviceLevelFunctions(instance);
 
     pickPhysicalDevice();
     
     createLogicalDevice();
+
+    loadDeviceLevelFunctions(device);
 
     createSwapChain();
 
@@ -163,6 +166,84 @@ private void initializeVulkan() {
 
 //!! ---------------- END VULKAN INIT -------------------------------
 
+//** ---------------- BEGIN DRAW TOOLS ---------------------------
+
+bool f() {
+    writeln("freeze!");
+    return true;
+}
+
+void drawFrame() {
+    
+    
+
+    vkWaitForFences(device, 1, &inFlightFence, VK_TRUE, ulong.max);
+    vkResetFences(device, 1, &inFlightFence);
+
+    uint imageIndex;
+    vkAcquireNextImageKHR(device, swapChain, ulong.max, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+
+    vkResetCommandBuffer(commandBuffer, 0);
+
+    recordCommandBuffer(commandBuffer, imageIndex);
+
+    VkSubmitInfo submitInfo;
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+    VkSemaphore[] waitSemaphores = [imageAvailableSemaphore];
+
+    VkPipelineStageFlags[] waitStages = [VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT];
+
+    submitInfo.waitSemaphoreCount = 1;
+    submitInfo.pWaitSemaphores = waitSemaphores.ptr;
+    submitInfo.pWaitDstStageMask = waitStages.ptr;
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &commandBuffer;
+
+    VkSemaphore[] signalSemaphores = [renderFinishedSemaphore];
+
+    submitInfo.signalSemaphoreCount = 1;
+    submitInfo.pSignalSemaphores = signalSemaphores.ptr;
+
+    if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS) {
+        throw new Exception("Vulkan: Failed to submit draw command buffer!");
+    }
+
+    if (f) return;
+
+    VkSubpassDependency dependency;
+    dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+    dependency.dstSubpass = 0;
+
+    dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.srcAccessMask = 0;
+
+    dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+    // renderPassInfo.dependencyCount = 1;
+    // renderPassInfo.pDependencies = &dependency;
+
+    VkPresentInfoKHR presentInfo;
+    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+    presentInfo.waitSemaphoreCount = 1;
+    presentInfo.pWaitSemaphores = signalSemaphores.ptr;
+
+    VkSwapchainKHR[] swapChains = [swapChain];
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains = swapChains.ptr;
+    presentInfo.pImageIndices = &imageIndex;
+    presentInfo.pResults = VK_NULL_HANDLE; // Optional
+
+    vkQueuePresentKHR(presentQueue, &presentInfo);
+
+    
+}
+
+
+//!! ---------------- END DRAW TOOLS -----------------------------
+
 //** ---------------- BEGIN SYNC TOOLS --------------------------
 
 void createSyncObjects() {
@@ -171,6 +252,7 @@ void createSyncObjects() {
 
     VkFenceCreateInfo fenceInfo;
     fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
     if (vkCreateSemaphore(device, &semaphoreInfo, VK_NULL_HANDLE, &imageAvailableSemaphore) != VK_SUCCESS ||
         vkCreateSemaphore(device, &semaphoreInfo, VK_NULL_HANDLE, &renderFinishedSemaphore) != VK_SUCCESS ||
@@ -199,8 +281,12 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
 
     */
     VkCommandBufferBeginInfo beginInfo;
+
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    beginInfo.flags = 0; // Optional
+    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+
+    // beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    // beginInfo.flags = 0; // Optional
     beginInfo.pInheritanceInfo = VK_NULL_HANDLE; // Optional
 
     if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
