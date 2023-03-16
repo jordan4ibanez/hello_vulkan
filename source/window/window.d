@@ -1143,6 +1143,7 @@ void createVulkanInstance() {
 void destroy() {
 
     vkDestroyPipelineLayout(device, pipelineLayout, VK_NULL_HANDLE);
+    vkDestroyRenderPass(device, renderPass, VK_NULL_HANDLE);
 
     foreach (VkImageView imageView; swapChainImageViews) {
         vkDestroyImageView(device, imageView, VK_NULL_HANDLE);
