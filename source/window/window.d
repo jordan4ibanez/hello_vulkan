@@ -51,6 +51,10 @@ void initialize() {
 }
 
 
+void render() {
+    Vulkan.drawFrame();
+}
+
 
 void destroy() {
 
