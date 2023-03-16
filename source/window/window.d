@@ -64,6 +64,7 @@ VkPipelineLayout pipelineLayout;
 VkPipeline graphicsPipeline;
 VkFramebuffer[] swapChainFramebuffers;
 VkCommandPool commandPool;
+VkCommandBuffer commandBuffer;
 
 // For Vulkan debugging
 private bool enableValidationLayers  = true;
@@ -154,7 +155,7 @@ private void initializeVulkan() {
 
 //!! ---------------- END VULKAN INIT -------------------------------
 
-//** ---------------- BEGIN COMMAND POOL TOOLS -----------------------
+//** ---------------- BEGIN COMMAND TOOLS -----------------------
 
 void createCommandPool() {
 
