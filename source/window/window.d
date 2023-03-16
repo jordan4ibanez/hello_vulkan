@@ -145,7 +145,7 @@ private void initializeVulkan() {
 
 //** -------------- BEGIN SHADER TOOLS -------------------------
 
-
+//! This is a beautiful hack to compile shaders during runtime
 void executeHackJobShaderCompile() {
 
     /**
@@ -157,7 +157,7 @@ void executeHackJobShaderCompile() {
     Thanks for the help, rikki_cattermole!
     */
     try {
-        auto spirvCompilerExecutable = execute(["glslc", "--help"]);
+        auto spirvCompilerExecutable = execute(["glslc", "--version"]);
         if (spirvCompilerExecutable.status != 0) {
             throw new Exception("");
         }
@@ -209,8 +209,6 @@ char[] readFile(string fileLocation) {
 
 
 //** ----------------- BEGIN GRAPHICS PIPELINE TOOLS ------------------
-
-//! This is a beautiful hack to compile shaders during runtime
 
 void createGraphicsPipeline() {
     auto vertShaderCode = readFile("shaders/vert.spv");
