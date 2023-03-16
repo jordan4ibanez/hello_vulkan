@@ -1,5 +1,9 @@
 module window.window;
 
+// Vulkan acts as a static class
+
+import Vulkan = vulkan.vulkan;
+
 import std.stdio;
 import std.conv;
 import std.string;
@@ -42,6 +46,8 @@ void initialize() {
     if (!initializeGLFW()) {
         throw new Exception("GLFW failed");
     }
+
+    Vulkan.initialize();
 }
 
 
