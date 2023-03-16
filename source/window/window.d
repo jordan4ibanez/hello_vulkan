@@ -176,6 +176,7 @@ void pollEvents() {
         deltaAccumulator = 0.0;
         FPS = fpsCounter;
         fpsCounter = 0;
+        writeln("FPS: ", FPS);
     }
 }
 
