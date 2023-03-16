@@ -27,7 +27,7 @@ import bindbc.glfw;
 mixin(bindGLFW_Vulkan);
 
 
-private Vector3d clearColor;
+// private Vector3d clearColor;
 
 // GLFW fields
 private string title;
@@ -160,10 +160,97 @@ private void initializeVulkan() {
 //** ---------------- BEGIN COMMAND TOOLS -----------------------
 
 
+void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+    /**
+
+    Notes on the flags parameter:
+
+    VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT: The command buffer will be rerecorded right after executing it once.
+    VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT: This is a secondary command buffer that will be entirely within a single render pass.
+    VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT: The command buffer can be resubmitted while it is also already pending execution.
+
+    */
+    VkCommandBufferBeginInfo beginInfo;
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = 0; // Optional
+    beginInfo.pInheritanceInfo = VK_NULL_HANDLE; // Optional
+
+    if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
+        throw new Exception("Vulkan: Failed to begin recording command buffer!");
+    }
+
+    // Begin render pass
+
+    VkRenderPassBeginInfo renderPassInfo;
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    renderPassInfo.renderPass = renderPass;
+    renderPassInfo.framebuffer = swapChainFramebuffers[imageIndex];
+
+    renderPassInfo.renderArea.offset = VkOffset2D(0, 0);
+    renderPassInfo.renderArea.extent = swapChainExtent;
+
+    // Clear color :)
+    
+    VkClearValue clearColor;
+    clearColor.color = VkClearColorValue([0,0,0,1]);
+    renderPassInfo.clearValueCount = 1;
+    renderPassInfo.pClearValues = &clearColor;
+    
+    /**
+
+    Note for third parameter:
+
+    VK_SUBPASS_CONTENTS_INLINE: The render pass commands will be embedded in the primary command buffer itself and no secondary command buffers will be executed.
+    VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS: The render pass commands will be executed from secondary command buffers.
+
+    */
+
+    vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+
+    VkViewport viewport;
+    viewport.x = 0.0f;
+    viewport.y = 0.0f;
+    viewport.width = cast(float)swapChainExtent.width;
+    viewport.height = cast(float)swapChainExtent.height;
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+    vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+    VkRect2D scissor;
+    scissor.offset = VkOffset2D(0, 0);
+    scissor.extent = swapChainExtent;
+    vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
+    /**
+    Notes for this function:
+
+    vertexCount: Even though we don't have a vertex buffer, we technically still have 3 vertices to draw.
+    instanceCount: Used for instanced rendering, use 1 if you're not doing that.
+    firstVertex: Used as an offset into the vertex buffer, defines the lowest value of gl_VertexIndex.
+    firstInstance: Used as an offset for instanced rendering, defines the lowest value of gl_InstanceIndex.
+
+    */
+    vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+
+    vkCmdEndRenderPass(commandBuffer);
+
+    if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
+        throw new Exception("Vulkan: Failed to record command buffer!");
+    }
+
+    writeln("Successfully recorded command buffer!");
+    
+
+
+}
+
+
 void createCommandBuffer() {
 
     /**
-    
+
     Notes for the level parameter:
 
     VK_COMMAND_BUFFER_LEVEL_PRIMARY: Can be submitted to a queue for execution, but cannot be called from other command buffers.
