@@ -234,6 +234,8 @@ void createGraphicsPipeline() {
     vkDestroyShaderModule(device, fragShaderModule, VK_NULL_HANDLE);
     vkDestroyShaderModule(device, vertShaderModule, VK_NULL_HANDLE);
 
+    // Create shader state 
+
     VkDynamicState[] dynamicStates = [
         VK_DYNAMIC_STATE_VIEWPORT,
         VK_DYNAMIC_STATE_SCISSOR
@@ -244,6 +246,77 @@ void createGraphicsPipeline() {
     dynamicState.dynamicStateCount = cast(uint)dynamicStates.length;
     dynamicState.pDynamicStates = dynamicStates.ptr;
 
+
+    // This is how you do it dynamic (resizable window)
+    /*
+    VkDynamicState[] dynamicStates = [
+        VK_DYNAMIC_STATE_VIEWPORT,
+        VK_DYNAMIC_STATE_SCISSOR
+    ];
+
+    VkPipelineDynamicStateCreateInfo dynamicState;
+    dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicState.dynamicStateCount = dynamicStates.length;
+    dynamicState.pDynamicStates = dynamicStates.ptr;
+
+    VkPipelineViewportStateCreateInfo viewportState;
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.scissorCount = 1;
+    */
+
+    // Create vertex input
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo;
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    vertexInputInfo.vertexBindingDescriptionCount = 0;
+    vertexInputInfo.pVertexBindingDescriptions = VK_NULL_HANDLE; // Optional
+    vertexInputInfo.vertexAttributeDescriptionCount = 0;
+    vertexInputInfo.pVertexAttributeDescriptions = VK_NULL_HANDLE; // Optional
+
+    // Create vertex input assembly
+    /**
+    Documentation notes:
+
+    VK_PRIMITIVE_TOPOLOGY_POINT_LIST: points from vertices
+    VK_PRIMITIVE_TOPOLOGY_LINE_LIST: line from every 2 vertices without reuse
+    VK_PRIMITIVE_TOPOLOGY_LINE_STRIP: the end vertex of every line is used as start vertex for the next line
+    VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST: triangle from every 3 vertices without reuse
+    VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP: the second and third vertex of every triangle are used as first two vertices of the next triangle
+
+    That looks real familiar doesn't it?
+    */
+
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly;
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+    // Create viewport
+
+    VkViewport viewport;
+    viewport.x = 0.0f;
+    viewport.y = 0.0f;
+    viewport.width = cast(float) swapChainExtent.width;
+    viewport.height = cast(float) swapChainExtent.height;
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+
+    // Scissor the entire framebuffer
+
+    VkRect2D scissor;
+    scissor.offset = VkOffset2D(0, 0);
+    scissor.extent = swapChainExtent;
+
+    // Create viewport state
+
+    VkPipelineViewportStateCreateInfo viewportState;
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = &viewport;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = &scissor;
+    
 }
 
 
