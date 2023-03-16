@@ -26,38 +26,38 @@ mixin(bindGLFW_Vulkan);
 // Vulkan fields
 
 private VkInstance instance;
-VkDebugUtilsMessengerEXT debugMessenger;
-VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-VkDevice device;
-VkQueue graphicsQueue;
-VkSurfaceKHR surface;
-VkQueue presentQueue;
-VkSwapchainKHR swapChain;
-VkImage[] swapChainImages;
-VkFormat swapChainImageFormat;
-VkExtent2D swapChainExtent;
-VkImageView[] swapChainImageViews;
-VkRenderPass renderPass;
-VkPipelineLayout pipelineLayout;
-VkPipeline graphicsPipeline;
-VkFramebuffer[] swapChainFramebuffers;
-VkCommandPool commandPool;
-VkCommandBuffer commandBuffer;
+private VkDebugUtilsMessengerEXT debugMessenger;
+private VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+private VkDevice device;
+private VkQueue graphicsQueue;
+private VkSurfaceKHR surface;
+private VkQueue presentQueue;
+private VkSwapchainKHR swapChain;
+private VkImage[] swapChainImages;
+private VkFormat swapChainImageFormat;
+private VkExtent2D swapChainExtent;
+private VkImageView[] swapChainImageViews;
+private VkRenderPass renderPass;
+private VkPipelineLayout pipelineLayout;
+private VkPipeline graphicsPipeline;
+private VkFramebuffer[] swapChainFramebuffers;
+private VkCommandPool commandPool;
+private VkCommandBuffer commandBuffer;
 //! Note: Semaphore is a fancy word for signal aka a flag
-VkSemaphore imageAvailableSemaphore;
-VkSemaphore renderFinishedSemaphore;
-VkFence inFlightFence;
+private VkSemaphore imageAvailableSemaphore;
+private VkSemaphore renderFinishedSemaphore;
+private VkFence inFlightFence;
 
 // For Vulkan debugging
 private bool enableValidationLayers  = true;
 // For EXCESSIVE debugging
-bool excessiveDebug = false;
+private bool excessiveDebug = false;
 
-const string[] validationLayers = [
+private const string[] validationLayers = [
     "VK_LAYER_KHRONOS_validation"
 ];
 
-const string[] deviceExtensions = [
+private const string[] deviceExtensions = [
     VK_KHR_SWAPCHAIN_EXTENSION_NAME
 ];
 
@@ -75,7 +75,7 @@ private struct QueueFamilyIndices {
     }
 }
 
-struct SwapChainSupportDetails {
+private struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
     VkSurfaceFormatKHR[] formats;
     VkPresentModeKHR[] presentModes;
@@ -85,7 +85,7 @@ struct SwapChainSupportDetails {
 
 //** ---------------- BEGIN VULKAN INIT --------------------------------------------
 
-private void initializeVulkan() {
+void initialize() {
 
     // Attempt to load the BindBC Vulkan library
     if (!loadGLFW_Vulkan()) {
@@ -121,7 +121,7 @@ private void initializeVulkan() {
     createRenderPass();
 
     // This literally just runs an executable to turn glsl into spir-v
-    executeHackJobShaderCompile();
+    // executeHackJobShaderCompile();
 
     createGraphicsPipeline();
 
@@ -138,7 +138,7 @@ private void initializeVulkan() {
 
 //** ---------------- BEGIN DRAW TOOLS ---------------------------
 
-bool f() {
+private bool f() {
     writeln("freeze!");
     return true;
 }
@@ -216,7 +216,7 @@ void drawFrame() {
 
 //** ---------------- BEGIN SYNC TOOLS --------------------------
 
-void createSyncObjects() {
+private void createSyncObjects() {
     VkSemaphoreCreateInfo semaphoreInfo;
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
@@ -240,7 +240,7 @@ void createSyncObjects() {
 //** ---------------- BEGIN COMMAND TOOLS -----------------------
 
 
-void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+private void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
     /**
 
     Notes on the flags parameter:
@@ -329,7 +329,7 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
 }
 
 
-void createCommandBuffer() {
+private void createCommandBuffer() {
 
     /**
 
@@ -355,7 +355,7 @@ void createCommandBuffer() {
 }
 
 
-void createCommandPool() {
+private void createCommandPool() {
 
     QueueFamilyIndices queueFamilyIndices = findQueueFamilies(physicalDevice);
 
@@ -387,7 +387,7 @@ void createCommandPool() {
 //** ----------------- BEGIN FRAMEBUFFER TOOLS --------------------
 
 
-void createFramebuffers() {
+private void createFramebuffers() {
 
     swapChainFramebuffers.length = swapChainImageViews.length;
 
@@ -418,7 +418,7 @@ void createFramebuffers() {
 
 //** ---------------------  BEGIN RENDER PASS TOOLS ---------------------
 
-void createRenderPass() {
+private void createRenderPass() {
 
     // Create color attachment
 
@@ -510,7 +510,7 @@ void createRenderPass() {
 //** -------------- BEGIN SHADER TOOLS -------------------------
 
 //! This is a beautiful hack to compile shaders during runtime
-void executeHackJobShaderCompile() {
+private void executeHackJobShaderCompile() {
 
     /**
     ENFORCE having the glslc compiler onboard!
@@ -544,7 +544,7 @@ void executeHackJobShaderCompile() {
     }
 }
 
-VkShaderModule createShaderModule(char[] code) {
+private VkShaderModule createShaderModule(char[] code) {
     VkShaderModuleCreateInfo createInfo;
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     createInfo.codeSize = code.length;
@@ -559,7 +559,7 @@ VkShaderModule createShaderModule(char[] code) {
 }
 
 
-char[] readFile(string fileLocation) {
+private char[] readFile(string fileLocation) {
 
     if (!exists(fileLocation)) {
         throw new Exception("Vulkan: File " ~ fileLocation ~ " does not exist!");
@@ -574,7 +574,7 @@ char[] readFile(string fileLocation) {
 
 //** ----------------- BEGIN GRAPHICS PIPELINE TOOLS ------------------
 
-void createGraphicsPipeline() {
+private void createGraphicsPipeline() {
     auto vertShaderCode = readFile("shaders/vert.spv");
     auto fragShaderCode = readFile("shaders/frag.spv");
 
@@ -804,7 +804,7 @@ void createGraphicsPipeline() {
 
 //** ----------------- BEGIN IMAGE VIEWS TOOLS -----------------
 
-void createImageViews() {
+private void createImageViews() {
 
     swapChainImageViews.length = swapChainImages.length;
 
@@ -840,7 +840,7 @@ void createImageViews() {
 //** --------------- BEGIN SWAP CHAIN TOOLS ---------------------
 
 
-void createSwapChain() {
+private void createSwapChain() {
     SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice);
 
     VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
@@ -898,7 +898,7 @@ void createSwapChain() {
     writeln("Vulkan: Successfully created swap chain!");
 }
 
-SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device) {
+private SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device) {
 
 
     SwapChainSupportDetails details;
@@ -925,7 +925,7 @@ SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device) {
     return details;
 }
 
-VkSurfaceFormatKHR chooseSwapSurfaceFormat(VkSurfaceFormatKHR[] availableFormats) {
+private VkSurfaceFormatKHR chooseSwapSurfaceFormat(VkSurfaceFormatKHR[] availableFormats) {
 
     // We're choosing 32 bit pixel color SRGB (8 bit R,G,B,A)
     foreach (VkSurfaceFormatKHR availableFormat; availableFormats) {
@@ -937,7 +937,7 @@ VkSurfaceFormatKHR chooseSwapSurfaceFormat(VkSurfaceFormatKHR[] availableFormats
     return availableFormats[0];
 }
 
-VkPresentModeKHR chooseSwapPresentMode(const VkPresentModeKHR[] availablePresentModes) {
+private VkPresentModeKHR chooseSwapPresentMode(const VkPresentModeKHR[] availablePresentModes) {
     /**
     Here is what these modes mean:
 
@@ -962,7 +962,7 @@ VkPresentModeKHR chooseSwapPresentMode(const VkPresentModeKHR[] availablePresent
     return VK_PRESENT_MODE_FIFO_KHR;
 }
 
-VkExtent2D chooseSwapExtent(VkSurfaceCapabilitiesKHR capabilities) {
+private VkExtent2D chooseSwapExtent(VkSurfaceCapabilitiesKHR capabilities) {
 
     /**
     This is the resolution of swap chain images.
@@ -1015,7 +1015,7 @@ private void createSurface() {
 //** ---------------------- BEGIN LOGICAL DEVICE -------------------
 
 
-void createLogicalDevice() {
+private void createLogicalDevice() {
 
     
     QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
@@ -1083,7 +1083,7 @@ void createLogicalDevice() {
 
 //** ------------ BEGIN PHYSICAL DEVICE ---------------------
 
-void pickPhysicalDevice() {
+private void pickPhysicalDevice() {
     uint deviceCount = 0;
     
     vkEnumeratePhysicalDevices(instance, &deviceCount, VK_NULL_HANDLE);
@@ -1108,7 +1108,7 @@ void pickPhysicalDevice() {
 
 }
 
-bool isDeviceSuitable(VkPhysicalDevice device) {
+private bool isDeviceSuitable(VkPhysicalDevice device) {
 
     VkPhysicalDeviceProperties deviceProperties;
     vkGetPhysicalDeviceProperties(device, &deviceProperties);
@@ -1142,7 +1142,7 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
     return fullSupport;
 }
 
-bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
+private bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
 
     // Basically, we're creating a dynamic array of all supported extensions for the current device (GPU)
     uint extensionCount;
@@ -1174,7 +1174,7 @@ bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
     return requiredExtensions.empty();
 }
 
-QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
+private QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
 
     QueueFamilyIndices indices;
     
@@ -1206,14 +1206,14 @@ QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
 
 //** ------------ BEGIN DEBUGGER ---------------------------------
 
-void populateDebugMessengerCreateInfo(ref VkDebugUtilsMessengerCreateInfoEXT createInfo) {
+private void populateDebugMessengerCreateInfo(ref VkDebugUtilsMessengerCreateInfoEXT createInfo) {
     createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
     createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
     createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
     createInfo.pfnUserCallback = cast(PFN_vkDebugUtilsMessengerCallbackEXT)&debugCallback;
 }
 
-void setupDebugMessenger() {
+private void setupDebugMessenger() {
     if (!enableValidationLayers) {
         writeln("Vulkan: Debugger is disabled!");
     }
@@ -1234,7 +1234,7 @@ void setupDebugMessenger() {
     }
 }
 
-VkResult createDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
+private VkResult createDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
 
     auto func = cast(PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
     if (func != VK_NULL_HANDLE) {
@@ -1244,14 +1244,14 @@ VkResult createDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMes
     }
 }
 
-void destroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
+private void destroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
     auto func = cast(PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
     if (func != VK_NULL_HANDLE) {
         func(instance, debugMessenger, pAllocator);
     }
 }
 
-VkBool32 debugCallback(
+private VkBool32 debugCallback(
     VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
     VkDebugUtilsMessageTypeFlagsEXT messageType,
     const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
@@ -1271,7 +1271,7 @@ VkBool32 debugCallback(
 
 //** --------------------- BEGIN EXTENSIONS & VALIDATION --------------------
 
-string[] getRequiredExtensions() {
+private string[] getRequiredExtensions() {
 
     // We're basically crawling through C pointers here to get usable strings
 
@@ -1297,7 +1297,7 @@ string[] getRequiredExtensions() {
 }
 
 // We must convert this into a C style array array - Thanks for the help ADR!
-const(char*)* convertToCStringArray(const string[] inputArray) {
+private const(char*)* convertToCStringArray(const string[] inputArray) {
     const(char)*[] array = [];
     foreach (string name; inputArray) {
         array ~= name.toStringz;
@@ -1370,7 +1370,7 @@ private void checkValidationLayerSupport() {
 //** ----------------------- BEGIN INSTANCE TOOLS ------------------------------------
 
 
-void createVulkanInstance() {
+private void createVulkanInstance() {
     // App information
     VkApplicationInfo appInfo;
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
