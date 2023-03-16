@@ -489,6 +489,8 @@ void createGraphicsPipeline() {
         throw new Exception("Vulkan: Failed to create pipeline layout!");
     }
 
+    writeln("Vulkan: Succesfully created pipeline layout!");
+
     // Create pipeline info
 
     VkGraphicsPipelineCreateInfo pipelineInfo;
@@ -513,11 +515,15 @@ void createGraphicsPipeline() {
     pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
     pipelineInfo.basePipelineIndex = -1; // Optional
 
+    if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, VK_NULL_HANDLE, &graphicsPipeline) != VK_SUCCESS) {
+        throw new Exception("Vulkan: Failed to create graphics pipeline!");
+    }
+
+    writeln("Vulkan: Successfully created graphics pipeline!");
+
 
     vkDestroyShaderModule(device, fragShaderModule, VK_NULL_HANDLE);
     vkDestroyShaderModule(device, vertShaderModule, VK_NULL_HANDLE);
-
-    writeln("Vulkan: Successfully created pipeline layout!");
 
 }
 
@@ -1181,6 +1187,7 @@ void createVulkanInstance() {
 
 void destroy() {
 
+    vkDestroyPipeline(device, graphicsPipeline, VK_NULL_HANDLE);
     vkDestroyPipelineLayout(device, pipelineLayout, VK_NULL_HANDLE);
     vkDestroyRenderPass(device, renderPass, VK_NULL_HANDLE);
 
