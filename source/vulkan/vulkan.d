@@ -313,8 +313,11 @@ private void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIn
     firstVertex: Used as an offset into the vertex buffer, defines the lowest value of gl_VertexIndex.
     firstInstance: Used as an offset for instanced rendering, defines the lowest value of gl_InstanceIndex.
 
+
+    //! Temporarily changed to 9 :)
+
     */
-    vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+    vkCmdDraw(commandBuffer, 9, 1, 0, 0);
 
     vkCmdEndRenderPass(commandBuffer);
 
