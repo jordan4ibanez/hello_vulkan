@@ -61,6 +61,7 @@ VkExtent2D swapChainExtent;
 VkImageView[] swapChainImageViews;
 VkRenderPass renderPass;
 VkPipelineLayout pipelineLayout;
+VkPipeline graphicsPipeline;
 
 // For Vulkan debugging
 private bool enableValidationLayers  = true;
@@ -325,9 +326,6 @@ void createGraphicsPipeline() {
     fragShaderStageInfo.pName = "main";
 
     VkPipelineShaderStageCreateInfo[] shaderStages = [vertShaderStageInfo, fragShaderStageInfo];
-    
-    vkDestroyShaderModule(device, fragShaderModule, VK_NULL_HANDLE);
-    vkDestroyShaderModule(device, vertShaderModule, VK_NULL_HANDLE);
 
     // Create shader state 
 
@@ -454,7 +452,7 @@ void createGraphicsPipeline() {
     multisampling.alphaToOneEnable = VK_FALSE; // Optional
 
 
-    // Create color blender - multiple choices here - see tutorial for other choices
+    // Create color blend state - multiple choices here - see tutorial for other choices
     VkPipelineColorBlendAttachmentState colorBlendAttachment;
     colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.blendEnable = VK_FALSE;
@@ -464,6 +462,19 @@ void createGraphicsPipeline() {
     colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE; // Optional
     colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO; // Optional
     colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD; // Optional
+
+    // Create color blending
+
+    VkPipelineColorBlendStateCreateInfo colorBlending;
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY; // Optional
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+    colorBlending.blendConstants[0] = 0.0f; // Optional
+    colorBlending.blendConstants[1] = 0.0f; // Optional
+    colorBlending.blendConstants[2] = 0.0f; // Optional
+    colorBlending.blendConstants[3] = 0.0f; // Optional
 
     // Now we have the actual pipeline layout, create it
 
@@ -477,6 +488,34 @@ void createGraphicsPipeline() {
     if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, VK_NULL_HANDLE, &pipelineLayout) != VK_SUCCESS) {
         throw new Exception("Vulkan: Failed to create pipeline layout!");
     }
+
+    // Create pipeline info
+
+    VkGraphicsPipelineCreateInfo pipelineInfo;
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages.ptr;
+
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pDepthStencilState = VK_NULL_HANDLE; // Optional
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.pDynamicState = &dynamicState;
+
+    pipelineInfo.layout = pipelineLayout;
+
+    pipelineInfo.renderPass = renderPass;
+    pipelineInfo.subpass = 0;
+
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
+    pipelineInfo.basePipelineIndex = -1; // Optional
+
+
+    vkDestroyShaderModule(device, fragShaderModule, VK_NULL_HANDLE);
+    vkDestroyShaderModule(device, vertShaderModule, VK_NULL_HANDLE);
 
     writeln("Vulkan: Successfully created pipeline layout!");
 
