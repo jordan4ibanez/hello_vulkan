@@ -1399,6 +1399,10 @@ void createVulkanInstance() {
 
 void destroy() {
 
+    vkDestroySemaphore(device, imageAvailableSemaphore, VK_NULL_HANDLE);
+    vkDestroySemaphore(device, renderFinishedSemaphore, VK_NULL_HANDLE);
+    vkDestroyFence(device, inFlightFence, VK_NULL_HANDLE);
+
     vkDestroyCommandPool(device, commandPool, VK_NULL_HANDLE);
 
     foreach (VkFramebuffer framebuffer; swapChainFramebuffers) {
