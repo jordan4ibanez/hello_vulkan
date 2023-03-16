@@ -63,6 +63,7 @@ VkRenderPass renderPass;
 VkPipelineLayout pipelineLayout;
 VkPipeline graphicsPipeline;
 VkFramebuffer[] swapChainFramebuffers;
+VkCommandPool commandPool;
 
 // For Vulkan debugging
 private bool enableValidationLayers  = true;
@@ -147,9 +148,42 @@ private void initializeVulkan() {
     createGraphicsPipeline();
 
     createFramebuffers();
+
+    createCommandPool();
 }
 
 //!! ---------------- END VULKAN INIT -------------------------------
+
+//** ---------------- BEGIN COMMAND POOL TOOLS -----------------------
+
+void createCommandPool() {
+
+    QueueFamilyIndices queueFamilyIndices = findQueueFamilies(physicalDevice);
+
+    /**
+
+    Note for command pool flags:
+
+    VK_COMMAND_POOL_CREATE_TRANSIENT_BIT: Hint that command buffers are rerecorded with new commands very often (may change memory allocation behavior)
+    VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT: Allow command buffers to be rerecorded individually, without this flag they all have to be reset together
+
+    */
+
+    VkCommandPoolCreateInfo poolInfo;
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.get();
+
+    if (vkCreateCommandPool(device, &poolInfo, VK_NULL_HANDLE, &commandPool) != VK_SUCCESS) {
+        throw new Exception("Vulkan: Failed to create command pool!");
+    }
+
+    writeln("Vulkan: Successfully created command pool!");
+
+
+}
+
+//!! --------------- END COMMAND POOL TOOLS -----------------------
 
 //** ----------------- BEGIN FRAMEBUFFER TOOLS --------------------
 
