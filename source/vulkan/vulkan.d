@@ -157,11 +157,9 @@ void drawFrame() {
     uint imageIndex;
     VkResult result = vkAcquireNextImageKHR(device, swapChain, ulong.max, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
     
-    if (result == VK_ERROR_OUT_OF_DATE_KHR || frameBufferResized) {
-        frameBufferResized = false;
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
         recreateSwapChain();
-        //! If this crashes, this is why TODO:
-        // return;
+        return;
     } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
         throw new Exception("Vulkan: Failed to acquire swap chain image!");
     }
@@ -222,7 +220,8 @@ void drawFrame() {
 
     result = vkQueuePresentKHR(presentQueue, &presentInfo);
 
-    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || frameBufferResized) {
+        frameBufferResized = false;
         recreateSwapChain();
     } else if (result != VK_SUCCESS) {
         throw new Exception("Vulkan: Failed to present swap chain image!");
@@ -419,6 +418,10 @@ private void createCommandPool() {
 //!! --------------- END COMMAND POOL TOOLS -----------------------
 
 //** ----------------- BEGIN FRAMEBUFFER TOOLS --------------------
+nothrow
+void triggerFramebufferResize() {
+    frameBufferResized = true;
+}
 
 
 private void createFramebuffers() {
@@ -886,7 +889,6 @@ void cleanupSwapChain() {
     vkDestroySwapchainKHR(device, swapChain, VK_NULL_HANDLE);
 
 }
-
 
 void recreateSwapChain() {
 
