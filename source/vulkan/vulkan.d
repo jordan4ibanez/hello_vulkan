@@ -1483,6 +1483,8 @@ private void createVulkanInstance() {
 
 
 void destroy() {
+    vkDeviceWaitIdle(device);
+    
     foreach (i; 0..MAX_FRAMES_IN_FLIGHT) {
         vkDestroySemaphore(device, imageAvailableSemaphores[i], VK_NULL_HANDLE);
         vkDestroySemaphore(device, renderFinishedSemaphores[i], VK_NULL_HANDLE);
