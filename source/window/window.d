@@ -135,7 +135,7 @@ private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
     // In the future, get array of monitor pointers with: GLFWmonitor** monitors = glfwGetMonitors(&count);
     // monitor = glfwGetPrimaryMonitor();
 
-    glfwSetKeyCallback(window, &key_callback);
+    glfwSetKeyCallback(window, &keyCallback);
 
     glfwSetFramebufferSizeCallback(window, &framebufferResizeCallback);
   
@@ -214,7 +214,7 @@ void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
 
 // This is a little baby function to allow me to quickly hit escape while rapidly debugging
 nothrow static extern (C)
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESC) {
         close();
     }
