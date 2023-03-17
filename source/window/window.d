@@ -26,7 +26,6 @@ import bindbc.glfw;
 
 // GLFW fields
 private string title;
-private Vector2i windowSize;
 
 private GLFWwindow* window = null;
 private GLFWmonitor* monitor = null;
@@ -156,11 +155,14 @@ void swapBuffers() {
 }
 
 Vector2i getSize() {
-    return windowSize;
+    Vector2i returningSize;
+    glfwGetFramebufferSize(window, &returningSize.x, &returningSize.y);
+    return returningSize;    
 }
 
 double getAspectRatio() {
-    return cast(double)windowSize.x / cast(double)windowSize.y;
+    Vector2i size = getSize();
+    return cast(double)size.x / cast(double)size.y;
 }
 
 void pollEvents() {
@@ -212,8 +214,6 @@ void wait() {
 // This is used to resize the vulkan framebuffer & internal size
 private nothrow static extern (C)
 void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
-    windowSize.x = width;
-    windowSize.y = height;
     Vulkan.triggerFramebufferResize();
 }
 
@@ -229,14 +229,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 }
 bool getKeyPressed(uint input) {
     return true;
-}
-
-
-double getWidth() {
-    return windowSize.x;
-}
-double getHeight() {
-    return windowSize.y;
 }
 
 
