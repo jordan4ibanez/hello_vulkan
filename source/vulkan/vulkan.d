@@ -211,6 +211,8 @@ void drawFrame() {
 
     vkQueuePresentKHR(presentQueue, &presentInfo);
 
+    writeln("Vulkan: Rendered into buffer ", currentFrame);
+
     currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
