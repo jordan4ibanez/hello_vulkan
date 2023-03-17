@@ -2,6 +2,11 @@ module mesh.mesh;
 
 import std.stdio;
 
+import erupted;
+import erupted.types;
+import erupted.vulkan_lib_loader;
+import erupted.platform_extensions;
+
 import doml.vector_2d;
 import doml.vector_3d;
 import doml.vector_4d;
