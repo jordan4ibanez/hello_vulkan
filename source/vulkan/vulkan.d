@@ -856,6 +856,32 @@ private void createImageViews() {
 
 //** --------------- BEGIN SWAP CHAIN TOOLS ---------------------
 
+void cleanupSwapChain() {
+
+    foreach (i; 0.. swapChainFramebuffers.length) {
+        vkDestroyFramebuffer(device, swapChainFramebuffers[i], VK_NULL_HANDLE);
+    }
+
+    foreach (i; 0.. swapChainImageViews.length) {
+        vkDestroyImageView(device, swapChainImageViews[i], VK_NULL_HANDLE);
+    }
+
+    vkDestroySwapchainKHR(device, swapChain, VK_NULL_HANDLE);
+
+}
+
+
+void recreateSwapChain() {
+
+    vkDeviceWaitIdle(device);
+
+    cleanupSwapChain();
+
+    createSwapChain();
+    createImageViews();
+    createFramebuffers();
+}
+
 
 private void createSwapChain() {
     SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice);
@@ -1483,8 +1509,12 @@ private void createVulkanInstance() {
 
 
 void destroy() {
+
+    // This just makes sure we're not using the gpu anymore
     vkDeviceWaitIdle(device);
-    
+
+    cleanupSwapChain();
+
     foreach (i; 0..MAX_FRAMES_IN_FLIGHT) {
         vkDestroySemaphore(device, imageAvailableSemaphores[i], VK_NULL_HANDLE);
         vkDestroySemaphore(device, renderFinishedSemaphores[i], VK_NULL_HANDLE);
@@ -1492,19 +1522,12 @@ void destroy() {
     }
 
     vkDestroyCommandPool(device, commandPool, VK_NULL_HANDLE);
-
-    foreach (VkFramebuffer framebuffer; swapChainFramebuffers) {
-        vkDestroyFramebuffer(device, framebuffer, VK_NULL_HANDLE);
-    }
+    
 
     vkDestroyPipeline(device, graphicsPipeline, VK_NULL_HANDLE);
     vkDestroyPipelineLayout(device, pipelineLayout, VK_NULL_HANDLE);
     vkDestroyRenderPass(device, renderPass, VK_NULL_HANDLE);
 
-    foreach (VkImageView imageView; swapChainImageViews) {
-        vkDestroyImageView(device, imageView, VK_NULL_HANDLE);
-    }
-    vkDestroySwapchainKHR(device, swapChain, VK_NULL_HANDLE);
     if (enableValidationLayers) {
         destroyDebugUtilsMessengerEXT(instance, debugMessenger, VK_NULL_HANDLE);
         writeln("Vulkan: Destroyed debugger!");
