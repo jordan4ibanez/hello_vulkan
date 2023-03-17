@@ -947,7 +947,9 @@ private VkPresentModeKHR chooseSwapPresentMode(const VkPresentModeKHR[] availabl
     VK_PRESENT_MODE_FIFO_KHR         = vsync 1
 
     This one is probably the best for pc games
-    VK_PRESENT_MODE_FIFO_RELAXED_KHR = Basically, decoupled vsync 0, don't wait
+    This also makes it so your engine FPS calculation is INACCURATE to the rendered FPS
+    Your engine can keep working while your window stays to vsync
+    VK_PRESENT_MODE_FIFO_RELAXED_KHR = decoupled vsync 1, don't wait
 
     VK_PRESENT_MODE_MAILBOX_KHR      = vsync 3 - Triple buffered
     */
