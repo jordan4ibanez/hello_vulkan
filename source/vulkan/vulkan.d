@@ -939,6 +939,8 @@ private VkSurfaceFormatKHR chooseSwapSurfaceFormat(VkSurfaceFormatKHR[] availabl
 }
 
 private VkPresentModeKHR chooseSwapPresentMode(const VkPresentModeKHR[] availablePresentModes) {
+
+    writeln(availablePresentModes);
     /**
     Here is what these modes mean:
 
@@ -949,8 +951,9 @@ private VkPresentModeKHR chooseSwapPresentMode(const VkPresentModeKHR[] availabl
     This one is probably the best for pc games
     This also makes it so your engine FPS calculation is INACCURATE to the rendered FPS
     Your engine can keep working while your window stays to vsync
-    VK_PRESENT_MODE_FIFO_RELAXED_KHR = decoupled vsync 1, don't wait
+    VK_PRESENT_MODE_FIFO_RELAXED_KHR = decoupled vsync 0, don't wait
 
+    // This one doesn't work right on Linux, I wouldn't rely on this
     VK_PRESENT_MODE_MAILBOX_KHR      = vsync 3 - Triple buffered
     */
 
