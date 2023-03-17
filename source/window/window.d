@@ -57,7 +57,7 @@ void render() {
 
 
 void destroy() {
-
+    Vulkan.destroy();
     glfwDestroyWindow(window);
     glfwTerminate();
     writeln("GLFW 3.3 destroyed successfully!");
