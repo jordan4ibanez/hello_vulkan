@@ -119,7 +119,7 @@ private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
     }
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    // glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     // Create a window on the primary monitor
     window = glfwCreateWindow(800, 600, "This is the window title", null, null);
@@ -206,14 +206,14 @@ bool isFullScreen() {
 }
 
 // This is used to resize the vulkan framebuffer
-nothrow static extern (C)
+private nothrow static extern (C)
 void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
-
+    Vulkan.triggerFramebufferResize();
 }
 
 
 // This is a little baby function to allow me to quickly hit escape while rapidly debugging
-nothrow static extern (C)
+private nothrow static extern (C)
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESC) {
         close();
