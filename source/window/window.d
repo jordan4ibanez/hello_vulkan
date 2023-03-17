@@ -205,6 +205,10 @@ bool isFullScreen() {
     return fullscreen;
 }
 
+void wait() {
+    glfwWaitEvents();
+}
+
 // This is used to resize the vulkan framebuffer & internal size
 private nothrow static extern (C)
 void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
