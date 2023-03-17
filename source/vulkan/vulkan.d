@@ -25,6 +25,10 @@ mixin(bindGLFW_Vulkan);
 
 // Vulkan fields
 
+private immutable int MAX_FRAMES_IN_FLIGHT = 2;
+
+private uint currentFrame = 0;
+
 private VkInstance instance;
 private VkDebugUtilsMessengerEXT debugMessenger;
 private VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -42,11 +46,11 @@ private VkPipelineLayout pipelineLayout;
 private VkPipeline graphicsPipeline;
 private VkFramebuffer[] swapChainFramebuffers;
 private VkCommandPool commandPool;
-private VkCommandBuffer commandBuffer;
+private VkCommandBuffer[] commandBuffers;
 //! Note: Semaphore is a fancy word for signal aka a flag
-private VkSemaphore imageAvailableSemaphore;
-private VkSemaphore renderFinishedSemaphore;
-private VkFence inFlightFence;
+private VkSemaphore[] imageAvailableSemaphores;
+private VkSemaphore[] renderFinishedSemaphores;
+private VkFence[] inFlightFences;
 
 // For Vulkan debugging
 private bool enableValidationLayers  = true;
@@ -129,7 +133,7 @@ void initialize() {
 
     createCommandPool();
 
-    createCommandBuffer();
+    createCommandBuffers();
 
     createSyncObjects();
 }
@@ -138,6 +142,7 @@ void initialize() {
 
 //** ---------------- BEGIN DRAW TOOLS ---------------------------
 
+//! This is a specific debug tool for checking different portions of the code
 private bool f() {
     writeln("freeze!");
     return true;
@@ -147,20 +152,20 @@ void drawFrame() {
     
     
 
-    vkWaitForFences(device, 1, &inFlightFence, VK_TRUE, ulong.max);
-    vkResetFences(device, 1, &inFlightFence);
+    vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, ulong.max);
+    vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
     uint imageIndex;
-    vkAcquireNextImageKHR(device, swapChain, ulong.max, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+    vkAcquireNextImageKHR(device, swapChain, ulong.max, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
 
-    vkResetCommandBuffer(commandBuffer, 0);
+    vkResetCommandBuffer(commandBuffers[currentFrame], 0);
 
-    recordCommandBuffer(commandBuffer, imageIndex);
+    recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
 
     VkSubmitInfo submitInfo;
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-    VkSemaphore[] waitSemaphores = [imageAvailableSemaphore];
+    VkSemaphore[] waitSemaphores = [imageAvailableSemaphores[currentFrame]];
 
     VkPipelineStageFlags[] waitStages = [VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT];
 
@@ -168,14 +173,14 @@ void drawFrame() {
     submitInfo.pWaitSemaphores = waitSemaphores.ptr;
     submitInfo.pWaitDstStageMask = waitStages.ptr;
     submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &commandBuffer;
+    submitInfo.pCommandBuffers = &commandBuffers[currentFrame];
 
-    VkSemaphore[] signalSemaphores = [renderFinishedSemaphore];
+    VkSemaphore[] signalSemaphores = [renderFinishedSemaphores[currentFrame]];
 
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores.ptr;
 
-    if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFence) != VK_SUCCESS) {
+    if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS) {
         throw new Exception("Vulkan: Failed to submit draw command buffer!");
     }
 
@@ -206,7 +211,7 @@ void drawFrame() {
 
     vkQueuePresentKHR(presentQueue, &presentInfo);
 
-    
+    currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
 
@@ -215,6 +220,11 @@ void drawFrame() {
 //** ---------------- BEGIN SYNC TOOLS --------------------------
 
 private void createSyncObjects() {
+
+    imageAvailableSemaphores.length = MAX_FRAMES_IN_FLIGHT;
+    renderFinishedSemaphores.length = MAX_FRAMES_IN_FLIGHT;
+    inFlightFences.length           = MAX_FRAMES_IN_FLIGHT;
+
     VkSemaphoreCreateInfo semaphoreInfo;
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
@@ -222,10 +232,12 @@ private void createSyncObjects() {
     fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
     fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-    if (vkCreateSemaphore(device, &semaphoreInfo, VK_NULL_HANDLE, &imageAvailableSemaphore) != VK_SUCCESS ||
-        vkCreateSemaphore(device, &semaphoreInfo, VK_NULL_HANDLE, &renderFinishedSemaphore) != VK_SUCCESS ||
-        vkCreateFence(device, &fenceInfo, VK_NULL_HANDLE, &inFlightFence) != VK_SUCCESS) {
-        throw new Exception("Vulkan: Failed to create semaphores!");
+    foreach (i; 0..MAX_FRAMES_IN_FLIGHT) {
+        if (vkCreateSemaphore(device, &semaphoreInfo, VK_NULL_HANDLE, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
+            vkCreateSemaphore(device, &semaphoreInfo, VK_NULL_HANDLE, &renderFinishedSemaphores[i]) != VK_SUCCESS ||
+            vkCreateFence(device, &fenceInfo, VK_NULL_HANDLE, &inFlightFences[i]) != VK_SUCCESS) {
+            throw new Exception("Vulkan: Failed to create semaphores!");
+        }
     }
 
     writeln("Vulkan: Successfully created semaphores!");
@@ -330,7 +342,9 @@ private void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIn
 }
 
 
-private void createCommandBuffer() {
+private void createCommandBuffers() {
+
+    commandBuffers.length = MAX_FRAMES_IN_FLIGHT;
 
     /**
 
@@ -345,9 +359,9 @@ private void createCommandBuffer() {
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.commandPool = commandPool;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandBufferCount = 1;
+    allocInfo.commandBufferCount = cast(uint)commandBuffers.length;
 
-    if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS) {
+    if (vkAllocateCommandBuffers(device, &allocInfo, commandBuffers.ptr) != VK_SUCCESS) {
         throw new Exception("Vulkan: Failed to allocate command buffers!");
     }
 
@@ -1467,9 +1481,11 @@ private void createVulkanInstance() {
 
 
 void destroy() {
-        vkDestroySemaphore(device, imageAvailableSemaphore, VK_NULL_HANDLE);
-    vkDestroySemaphore(device, renderFinishedSemaphore, VK_NULL_HANDLE);
-    vkDestroyFence(device, inFlightFence, VK_NULL_HANDLE);
+    foreach (i; 0..MAX_FRAMES_IN_FLIGHT) {
+        vkDestroySemaphore(device, imageAvailableSemaphores[i], VK_NULL_HANDLE);
+        vkDestroySemaphore(device, renderFinishedSemaphores[i], VK_NULL_HANDLE);
+        vkDestroyFence(device, inFlightFences[i], VK_NULL_HANDLE);
+    }
 
     vkDestroyCommandPool(device, commandPool, VK_NULL_HANDLE);
 
