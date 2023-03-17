@@ -75,8 +75,6 @@ private bool initializeGLFWComponents() {
         returnedError = loadGLFW();
     }
 
-    // loadGLFW_Vulkan();
-
     if(returnedError != glfwSupport) {
         writeln("ERROR IN GLFW!");
         writeln("---------- DIRECT DEBUG ERROR ---------------");
@@ -138,6 +136,8 @@ private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
     // monitor = glfwGetPrimaryMonitor();
 
     glfwSetKeyCallback(window, &key_callback);
+
+    glfwSetFramebufferSizeCallback(window, &framebufferResizeCallback);
   
 
     // No error :)
@@ -203,6 +203,12 @@ void close() {
 
 bool isFullScreen() {
     return fullscreen;
+}
+
+// This is used to resize the vulkan framebuffer
+nothrow static extern (C)
+void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
+
 }
 
 
