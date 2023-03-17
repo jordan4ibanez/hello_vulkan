@@ -16,7 +16,7 @@ import doml.vector_4i;
 class Mesh {
 
 
-    /// Creates the OpenGL context for assembling this GL Mesh Object.
+    /// Creates the Vulkan context for assembling this Vulkan Mesh Object.
     this() {
         
 
@@ -41,7 +41,7 @@ class Mesh {
     }
 
 
-    /// Unbinds the GL Array Buffer and Vertex Array Object in GPU memory
+    /// Unbinds the Vulkan Array Buffer and Vertex Array Object in GPU memory
     Mesh finalize() {
 
         return this;
