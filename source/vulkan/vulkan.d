@@ -149,11 +149,8 @@ private bool f() {
 }
 
 void drawFrame() {
-    
-    
 
     vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, ulong.max);
-    vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
     uint imageIndex;
     VkResult result = vkAcquireNextImageKHR(device, swapChain, ulong.max, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
@@ -164,6 +161,9 @@ void drawFrame() {
     } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
         throw new Exception("Vulkan: Failed to acquire swap chain image!");
     }
+
+    // Only reset the fence if we are submitting work!
+    vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
     vkResetCommandBuffer(commandBuffers[currentFrame], 0);
 
