@@ -156,7 +156,14 @@ void drawFrame() {
     vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
     uint imageIndex;
-    vkAcquireNextImageKHR(device, swapChain, ulong.max, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+    VkResult result = vkAcquireNextImageKHR(device, swapChain, ulong.max, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+    
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        recreateSwapChain();
+        return;
+    } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+        throw new Exception("Vulkan: Failed to acquire swap chain image!");
+    }
 
     vkResetCommandBuffer(commandBuffers[currentFrame], 0);
 
@@ -209,7 +216,13 @@ void drawFrame() {
     presentInfo.pImageIndices = &imageIndex;
     presentInfo.pResults = VK_NULL_HANDLE; // Optional
 
-    vkQueuePresentKHR(presentQueue, &presentInfo);
+    result = vkQueuePresentKHR(presentQueue, &presentInfo);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+        recreateSwapChain();
+    } else if (result != VK_SUCCESS) {
+        throw new Exception("Vulkan: Failed to present swap chain image!");
+    }
 
     // writeln("Vulkan: Rendered into buffer ", currentFrame);
 
