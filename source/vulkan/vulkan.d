@@ -12,6 +12,8 @@ import std.algorithm.comparison: clamp;
 import std.process: execute;
 import std.file;
 
+import doml.vector_2i;
+
 
 import aaset;
 
@@ -891,6 +893,15 @@ void cleanupSwapChain() {
 }
 
 void recreateSwapChain() {
+
+    int width = 0, height = 0;
+
+    glfwGetFramebufferSize(window, &width, &height);
+
+    while (width == 0 || height == 0) {
+        glfwGetFramebufferSize(window, &width, &height);
+        glfwWaitEvents();
+    }
 
     vkDeviceWaitIdle(device);
 
