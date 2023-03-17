@@ -969,7 +969,7 @@ private VkPresentModeKHR chooseSwapPresentMode(const VkPresentModeKHR[] availabl
     This one is probably the best for pc games
     This also makes it so your engine FPS calculation is INACCURATE to the rendered FPS
     Your engine can keep working while your window tries to vsync
-    VK_PRESENT_MODE_FIFO_RELAXED_KHR = decoupled vsync 0, don't wait
+    VK_PRESENT_MODE_FIFO_RELAXED_KHR = decoupled vsync 1, don't wait
 
     // This one doesn't work right on Linux
     // This also doesn't work right for nvidia on linux
@@ -980,7 +980,7 @@ private VkPresentModeKHR chooseSwapPresentMode(const VkPresentModeKHR[] availabl
 
 
     // We're just going to prefer Vsync mode, it's simple
-    VkPresentModeKHR prefered = VK_PRESENT_MODE_FIFO_RELAXED_KHR;
+    VkPresentModeKHR prefered = VK_PRESENT_MODE_MAILBOX_KHR;
 
     // Basically going to try to grab the decoupled mode so it's super nice
     foreach (VkPresentModeKHR availablePresentMode; availablePresentModes) {
