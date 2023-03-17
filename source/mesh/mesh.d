@@ -12,6 +12,12 @@ import doml.vector_3d;
 import doml.vector_4d;
 import doml.vector_4i;
 
+//Mesh struct container
+struct Vertex {
+    Vector3d position;
+    Vector3d color;
+}
+
 /// An Vulkan mesh. Utilizes builder pattern.
 class Mesh {
 
@@ -20,6 +26,17 @@ class Mesh {
     this() {
         
 
+    }
+
+    private static VkVertexInputBindingDescription getBindingDescription() {
+        VkVertexInputBindingDescription bindingDescription;
+
+        bindingDescription.binding = 0;
+        bindingDescription.stride = Vertex.sizeof;
+        bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+
+        return bindingDescription;
     }
 
     /// Adds vertex position data in Vector3 format within a linear double[].
