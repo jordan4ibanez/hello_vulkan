@@ -894,13 +894,13 @@ void cleanupSwapChain() {
 
 void recreateSwapChain() {
 
-    int width = 0, height = 0;
+    Vector2i size = Window.getSize();
 
-    glfwGetFramebufferSize(window, &width, &height);
-
-    while (width == 0 || height == 0) {
-        glfwGetFramebufferSize(window, &width, &height);
-        glfwWaitEvents();
+    //Todo: Test this on windows 10
+    while (size.x == 0 || size.y == 0) {
+        writeln("window is paused, this might be a crash on windows 10");
+        size = Window.getSize();
+        Window.wait();
     }
 
     vkDeviceWaitIdle(device);
