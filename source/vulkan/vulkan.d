@@ -895,10 +895,9 @@ void cleanupSwapChain() {
 void recreateSwapChain() {
 
     Vector2i size = Window.getSize();
-
-    //Todo: Test this on windows 10
+    
     while (size.x == 0 || size.y == 0) {
-        writeln("window is paused, this might be a crash on windows 10");
+        writeln("Vulkan: Window is paused.");
         size = Window.getSize();
         Window.wait();
     }
