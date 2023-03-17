@@ -29,6 +29,8 @@ private immutable int MAX_FRAMES_IN_FLIGHT = 2;
 
 private uint currentFrame = 0;
 
+private bool frameBufferResized = false;
+
 private VkInstance instance;
 private VkDebugUtilsMessengerEXT debugMessenger;
 private VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -155,9 +157,11 @@ void drawFrame() {
     uint imageIndex;
     VkResult result = vkAcquireNextImageKHR(device, swapChain, ulong.max, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
     
-    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || frameBufferResized) {
+        frameBufferResized = false;
         recreateSwapChain();
-        return;
+        //! If this crashes, this is why TODO:
+        // return;
     } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
         throw new Exception("Vulkan: Failed to acquire swap chain image!");
     }
